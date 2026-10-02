@@ -1,0 +1,267 @@
+<style id="gm-style">
+#gm-bar{display:none;align-items:center;gap:8px;background:#101820;border-bottom:1px solid #1f3a4a;padding:4px 10px;font-size:.68rem;color:#9fd;flex-shrink:0}
+#gm-bar.on{display:flex}
+#gm-bar .lv{color:#ffd54f;font-weight:bold;white-space:nowrap}
+#gm-xp{flex:1;height:6px;background:#223;border-radius:3px;overflow:hidden}
+#gm-xp i{display:block;height:100%;width:0;background:#00e5ff;transition:width .4s}
+#gm-combo{min-width:70px;text-align:right;color:#ffab40;font-weight:bold;opacity:0;transition:opacity .25s}
+.gm-box{background:#101820;border:1px solid #1f3a4a;border-left:3px solid #ffab40;padding:8px 10px;margin-top:8px;font-size:.72rem;color:#cfe;line-height:1.5;text-align:left}
+.gm-box b.h{display:block;color:#ffab40;margin-bottom:3px}
+.gm-box .row{display:flex;justify-content:space-between;border-bottom:1px solid #1d2b35;padding:1px 0}
+.gm-up{color:#ffd54f;font-weight:bold}
+.gm-pb{color:#00e676;font-weight:bold}
+#gm-overlay{display:none;position:fixed;inset:0;z-index:5200;background:#0a0a0a;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#gm-overlay.open{display:block}
+#gm-overlay *{user-select:text;-webkit-user-select:text}
+#gm-top{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;background:#151515;border-bottom:1px solid #333;padding:6px 10px;z-index:2}
+#gm-top b{color:#ffab40}
+#gm-top button{flex:none;min-height:36px;padding:6px 14px;background:#0288d1;max-width:none}
+#gm-body{max-width:760px;margin:0 auto;padding:12px;font-size:.8rem;color:#ddd}
+.gm-sec{border-top:1px solid #333;margin-top:14px;padding-top:8px}
+.gm-sec h4{margin:0 0 6px;color:#ffab40;font-size:.9rem}
+.gm-card{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:2px solid var(--tc,#cd7f32);background:#121212;padding:12px}
+.gm-card .meta{flex:1;min-width:150px}
+.gm-card .nm{font-size:1.1rem;font-weight:bold;color:var(--tc,#cd7f32)}
+.gm-attr{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px;margin-top:6px;font-size:.74rem}
+.gm-attr div{display:flex;justify-content:space-between;border-bottom:1px solid #222}
+.gm-q{display:flex;justify-content:space-between;border-bottom:1px solid #222;padding:3px 0}
+.gm-q.ok{color:#00e676}
+.gm-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.gm-b{border:1px solid #333;padding:6px;background:#121212;font-size:.72rem;opacity:.4}
+.gm-b.got{opacity:1;border-color:#ffd54f}
+.gm-b b{color:#ffd54f;display:block}
+.gm-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.gm-st{border:1px solid #333;background:#121212;padding:6px;font-size:.72rem;cursor:pointer;color:#ddd;text-align:left;min-height:0;max-width:none;font-weight:normal;border-radius:0}
+.gm-st small{display:block;color:#888}
+.gm-st .stars{color:#ffd54f;letter-spacing:2px}
+.gm-note{color:#888;font-size:.68rem;margin-top:6px}
+</style>
+
+<div id="gm-bar"><span class="lv" id="gm-lv">Sv.1</span><div id="gm-xp"><i></i></div><span id="gm-xptxt"></span><span id="gm-streak"></span><span id="gm-combo"></span></div>
+<div id="gm-overlay"><div id="gm-top"><b>Antrenman Kampı</b><button id="gm-close">Kapat</button></div><div id="gm-body"></div></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='spplab_game_v1',ONKEY='spplab_gm_on';
+var on=localStorage.getItem(ONKEY)==='1';
+var combo=0,maxCombo=0;
+
+/* ---------- Veri ---------- */
+function loadAll(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function saveAll(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
+function getP(id){var d=loadAll();if(!d[id])d[id]={xp:0,badges:{},pb:{},best:{},done:{},sess:[],claimed:{},pbCount:0};return{d:d,p:d[id]};}
+function curId(){var e=document.getElementById('athlete-id');return e?e.value.trim():'';}
+function h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---------- Zaman, seviye ---------- */
+function dayIdx(t){return Math.floor((t-new Date(t).getTimezoneOffset()*60000)/864e5);}
+function weekIdx(t){return Math.floor((dayIdx(t)+3)/7);}
+function lvOf(xp){var L=1;while(xp>=100*L*L)L++;return L;}
+function lvBase(L){return 100*(L-1)*(L-1);}
+function tierOf(L){return L<4?['Bronz','#cd7f32']:L<8?['Gümüş','#c0c0c0']:L<12?['Altın','#ffd54f']:['Elmas','#80deea'];}
+function streakOf(p){var ws={};p.sess.forEach(function(s){if(s.q)ws[weekIdx(s.t)]=1;});var w=weekIdx(Date.now()),n=0;if(!ws[w])w--;while(ws[w]){n++;w--;}return n;}
+
+/* ---------- Kategori / istasyon ---------- */
+var CATS=[
+{k:'Hız',re:/^(gonogo|sprint_ball|choice_react)$|pvt|reaction/i,st:'Refleks Arenası'},
+{k:'Kontrol',re:/^(stroop|simon|antisaccade)$|stop/i,st:'Kontrol Kulesi'},
+{k:'Esneklik',re:/^(trailA|trailB)$|switch|task/i,st:'Strateji Odası'},
+{k:'Bellek',re:/^(memory|nback|digit_span)$/i,st:'Hafıza Kasası'},
+{k:'Dikkat',re:/^(flanker|visual_search)$|mot|track/i,st:'Radar İstasyonu'},
+{k:'Zamanlama',re:/^(agility_run|complex_agility)$|antic|timing/i,st:'Ritim Pisti'}];
+function catOf(m){for(var i=0;i<CATS.length;i++)if(CATS[i].re.test(m))return CATS[i];return CATS[4];}
+
+/* ---------- Veri kalitesi (XP yalnızca geçerli seansa tam verilir) ---------- */
+function quality(r){
+var need=S.open?4:Math.max(5,Math.round(S.total*0.6));
+if(r.length<need)return{ok:false,why:'çok az deneme tamamlandı'};
+if(!/trail|memory|digit|antic|mot|track/i.test(S.mod)){
+var rts=r.filter(function(x){return x.rt!=null;}).map(function(x){return x.rt;});
+var fast=rts.filter(function(x){return x<150;}).length;
+if(rts.length&&fast/rts.length>0.15)return{ok:false,why:'150 ms altı tepkiler çok fazla (tahmin olasılığı)'};
+}
+var miss=r.filter(function(x){return x.response==='NONE'&&!x.correct;}).length;
+if(miss/r.length>0.5)return{ok:false,why:'denemelerin yarıdan fazlası cevapsız'};
+return{ok:true};
+}
+
+/* ---------- Görevler ---------- */
+function quests(p){
+var now=Date.now(),d=dayIdx(now),w=weekIdx(now);
+var ds=p.sess.filter(function(s){return s.q&&dayIdx(s.t)===d;});
+var ws=p.sess.filter(function(s){return s.q&&weekIdx(s.t)===w;});
+var u={},c={};ws.forEach(function(s){u[s.m]=1;c[catOf(s.m).k]=1;});
+return[
+{key:'d'+d+':D',t:'Bugün 1 geçerli seans tamamla',v:ds.length,g:1,xp:20},
+{key:'w'+w+':A',t:'Bu hafta 3 farklı test yap',v:Object.keys(u).length,g:3,xp:60},
+{key:'w'+w+':B',t:'Bu hafta 1 Güvenilir seans yap',v:ws.filter(function(s){return s.r;}).length,g:1,xp:60},
+{key:'w'+w+':C',t:'Bu hafta 3 farklı kategoride test yap',v:Object.keys(c).length,g:3,xp:60}];
+}
+
+/* ---------- Rozetler ---------- */
+function nogoOK(r){var n=r.filter(function(x){return x.condition==='NOGO';});return n.length>=8&&n.every(function(x){return x.correct;});}
+var BADGES=[
+{id:'ilk',n:'İlk Adım',d:'İlk geçerli seansı tamamla',t:function(c){return c.q.ok;}},
+{id:'guv',n:'Güvenilir Ölçüm',d:'Güvenilir modda geçerli seans',t:function(c){return c.q.ok&&S.rel;}},
+{id:'buz',n:'Buz Gibi',d:'Tepki değişkenliği (CV) %15 altı',t:function(c){return c.q.ok&&c.A&&c.A.cv!=null&&c.A.cv<0.15;}},
+{id:'sakin',n:'Sakin Nişancı',d:'Go/No-Go türü testte DUR denemelerinde hata yok',t:function(c){return c.q.ok&&/gonogo|complex_agility/.test(S.mod)&&nogoOK(c.r);}},
+{id:'demir',n:'Demir Dikkat',d:"PVT'de 500 ms üstü yanıt yok",t:function(c){return c.q.ok&&/pvt/i.test(S.mod)&&c.r.length>=15&&c.r.every(function(x){return x.correct&&x.rt!=null&&x.rt<=500;});}},
+{id:'kus',n:'Kusursuz',d:'En az 10 denemede %100 doğruluk',t:function(c){return c.q.ok&&c.r.length>=10&&c.r.every(function(x){return x.correct;});}},
+{id:'seri3',n:'Düzenli',d:'3 haftalık seri',t:function(c){return c.streak>=3;}},
+{id:'rek5',n:'Rekortmen',d:'5 kişisel rekor',t:function(c){return c.p.pbCount>=5;}},
+{id:'tam',n:'Tam Batarya',d:'Tüm testleri en az bir kez tamamla',t:function(c){return Object.keys(MODS).every(function(k){return c.p.done[k]>0;});}},
+{id:'sv5',n:'Kıdemli',d:'Seviye 5',t:function(c){return c.lv>=5;}}];
+
+/* ---------- Üst çubuk ---------- */
+function refreshBar(){
+var bar=document.getElementById('gm-bar'),btn=document.getElementById('gm-btn');
+if(bar)bar.classList.toggle('on',on);
+if(btn)btn.style.display=on?'':'none';
+if(!on)return;
+var id=curId(),p=getP(id).p,L=lvOf(p.xp),b=lvBase(L),n=lvBase(L+1);
+document.getElementById('gm-lv').textContent='Sv.'+L+' '+tierOf(L)[0];
+document.querySelector('#gm-xp i').style.width=Math.min(100,(p.xp-b)/(n-b)*100)+'%';
+document.getElementById('gm-xptxt').textContent=p.xp+'/'+n+' XP';
+document.getElementById('gm-streak').textContent='Seri: '+streakOf(p)+' hf';
+}
+
+/* ---------- Deneme arası combo (uyaran sırasında hiçbir şey değişmez) ---------- */
+var comboTimer=null;
+function showCombo(ok){
+if(ok){combo++;if(combo>maxCombo)maxCombo=combo;}else combo=0;
+var el=document.getElementById('gm-combo');if(!el)return;
+if(combo>=3){el.textContent='Seri x'+combo;el.style.opacity=1;if(combo%5===0&&typeof beep==='function')beep(880,0.08);}
+else el.style.opacity=0;
+clearTimeout(comboTimer);comboTimer=setTimeout(function(){el.style.opacity=0;},700);
+}
+
+/* ---------- Seans sonu ödülü ---------- */
+function reward(){
+var a=S.athlete;if(!a)return;
+var r=S.rows.filter(function(x){return !x.practice;});if(!r.length)return;
+var g=getP(a.id),p=g.p,mod=S.mod,mode=S.rel?'R':'Q',now=Date.now();
+var q=quality(r),A=null;
+try{A=analyze(mod,r);}catch(e){}
+var score=computeScore(),xp=0,lines=[],pbTxt='',newB=[],lvBefore=lvOf(p.xp);
+if(q.ok){var base=S.rel?150:50;xp+=base;lines.push(['Seans tamamlama ('+(S.rel?'Güvenilir':'Hızlı')+')',base]);if(!p.done[mod]){xp+=30;lines.push(['Yeni istasyon',30]);}}
+else{xp+=10;lines.push(['Katılım',10]);}
+if(q.ok&&A&&A.prim&&isFinite(A.prim.val)){
+var k=mod+'|'+mode,old=p.pb[k],v=Math.round(A.prim.val*100)/100,u=A.prim.unit?' '+A.prim.unit:'';
+if(!old){p.pb[k]={v:v,low:A.prim.low};pbTxt='İlk kayıt: '+A.prim.label+' '+v+u;}
+else{
+var better=old.low?v<old.v:v>old.v;
+if(better){p.pb[k]={v:v,low:A.prim.low};p.pbCount++;pbTxt='<span class="gm-pb">YENİ KİŞİSEL REKOR</span> '+A.prim.label+': '+old.v+' → '+v+u;}
+else pbTxt='Kişisel rekor: '+old.v+u+' (bu seans: '+v+u+')';
+}
+}
+if(q.ok){p.best[mod]=Math.max(p.best[mod]||0,score);}
+p.sess.push({m:mod,r:S.rel?1:0,t:now,q:q.ok?1:0});
+if(p.sess.length>300)p.sess=p.sess.slice(-300);
+var wasDone=p.done[mod]||0;
+if(q.ok)p.done[mod]=wasDone+1;
+var qs=quests(p),qLines=[];
+qs.forEach(function(x){
+if(x.v>=x.g&&!p.claimed[x.key]){p.claimed[x.key]=1;xp+=x.xp;lines.push(['Görev: '+x.t,x.xp]);}
+});
+var streak=streakOf(p);
+var ctx={p:p,r:r,A:A,q:q,streak:streak,lv:lvOf(p.xp+xp)};
+BADGES.forEach(function(bd){
+if(!p.badges[bd.id]){var ok=false;try{ok=bd.t(ctx);}catch(e){}if(ok){p.badges[bd.id]=now;newB.push(bd);xp+=20;lines.push(['Rozet: '+bd.n,20]);}}
+});
+p.xp+=xp;
+saveAll(g.d);
+var lvAfter=lvOf(p.xp);
+var html='<div class="gm-box gm-reward"><b class="h">Seans Ödülü: +'+xp+' XP</b>'+
+lines.map(function(l){return'<div class="row"><span>'+h(l[0])+'</span><span>+'+l[1]+'</span></div>';}).join('');
+if(!q.ok)html+='<div style="color:#ff8a80;margin-top:4px">Tam XP verilmedi: '+h(q.why)+'. Ölçüm geçerliliği için doğruluğa ve gerçek tepkiye odaklanın.</div>';
+if(pbTxt)html+='<div style="margin-top:4px">'+pbTxt+'</div>';
+if(newB.length)html+='<div style="margin-top:4px" class="gm-up">Yeni rozet: '+newB.map(function(b){return h(b.n);}).join(', ')+'</div>';
+if(lvAfter>lvBefore)html+='<div class="gm-up" style="margin-top:4px">SEVİYE ATLADIN: Sv.'+lvAfter+' '+tierOf(lvAfter)[0]+'</div>';
+html+='<div style="margin-top:4px">En uzun doğru seri: '+maxCombo+' · Haftalık seri: '+streak+' hf</div>';
+html+='<div class="gm-note">XP; hıza ve puana değil, tamamlamaya ve veri kalitesine bağlıdır.</div></div>';
+var card=document.getElementById('instruction-card');
+Array.prototype.forEach.call(card.querySelectorAll('.gm-box'),function(e){e.remove();});
+card.insertAdjacentHTML('beforeend',html);
+refreshBar();
+}
+
+/* ---------- Test öncesi görev kutusu ---------- */
+function missionBox(){
+var card=document.getElementById('instruction-card');
+Array.prototype.forEach.call(card.querySelectorAll('.gm-box'),function(e){e.remove();});
+if(!on)return;
+var mod=moduleSelect.value,c=catOf(mod),p=getP(curId()).p,pb=p.pb[mod+'|'+(rel()?'R':'Q')];
+var html='<div class="gm-box"><b class="h">İstasyon: '+c.st+' ('+c.k+')</b>'+
+'Görev: Testi dikkatle bitir. Ödül: '+(rel()?150:50)+' XP'+(p.done[mod]?'':' + 30 XP (yeni istasyon)')+'.<br>'+
+(pb?'Kişisel rekorun: '+pb.v+'. Hedef: kendini geç.':'Henüz rekorun yok. Bu seans ilk kayıt olur.')+
+'<div class="gm-note">Hızlı basmak ödül kazandırmaz. Gerçek tepkini ver.</div></div>';
+card.insertAdjacentHTML('beforeend',html);
+}
+
+/* ---------- Kamp paneli ---------- */
+function stars(p,m){
+var n=p.sess.filter(function(s){return s.m===m&&s.q;}),hasR=n.some(function(s){return s.r;});
+var s=n.length?1:0;if(hasR)s=2;if(hasR&&n.length>=3)s=3;
+return'★★★'.slice(0,s)+'☆☆☆'.slice(0,3-s);
+}
+function radar(vals){
+var cx=120,cy=120,R=90,N=6,pts=[],g='';
+function pt(i,f){var a=-Math.PI/2+i*2*Math.PI/N;return[(cx+Math.cos(a)*R*f).toFixed(1),(cy+Math.sin(a)*R*f).toFixed(1)];}
+[0.33,0.66,1].forEach(function(f){var ps=[];for(var i=0;i<N;i++)ps.push(pt(i,f).join(','));g+='<polygon points="'+ps.join(' ')+'" fill="none" stroke="#333"/>';});
+for(var i=0;i<N;i++){var e=pt(i,1),l=pt(i,1.18);g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0]+'" y2="'+e[1]+'" stroke="#333"/><text x="'+l[0]+'" y="'+l[1]+'" fill="#9fd" font-size="10" text-anchor="middle" dominant-baseline="middle">'+CATS[i].k+'</text>';pts.push(pt(i,Math.max(0.02,(vals[i]||0)/99)).join(','));}
+g+='<polygon points="'+pts.join(' ')+'" fill="rgba(0,229,255,.25)" stroke="#00e5ff" stroke-width="2"/>';
+return'<svg viewBox="0 0 240 240" width="220" height="220">'+g+'</svg>';
+}
+function openCamp(){
+if(S.active)return;
+var id=curId();if(!id){alert('Sporcu ID gerekli.');return;}
+var p=getP(id).p,L=lvOf(p.xp),t=tierOf(L),streak=streakOf(p);
+var cat={};CATS.forEach(function(c){cat[c.k]=[];});
+Object.keys(MODS).forEach(function(m){if(p.best[m]!=null)cat[catOf(m).k].push(Math.min(99,Math.round(p.best[m]/10)));});
+var vals=CATS.map(function(c){return cat[c.k].length?Math.round(mean(cat[c.k])):0;});
+var have=CATS.filter(function(c){return cat[c.k].length;}),ov=have.length?Math.round(mean(have.map(function(c){return mean(cat[c.k]);}))):0;
+var html='<div class="gm-card" style="--tc:'+t[1]+'"><div>'+radar(vals)+'</div><div class="meta"><div class="nm">'+h(id)+'</div><div>'+t[0]+' · Seviye '+L+' · '+p.xp+' XP</div><div>Genel: <b>'+(have.length?ov:'–')+'</b> · Seri: '+streak+' hafta</div><div class="gm-attr">'+CATS.map(function(c,i){return'<div><span>'+c.k+'</span><b>'+(cat[c.k].length?vals[i]:'–')+'</b></div>';}).join('')+'</div></div></div>';
+html+='<div class="gm-note">Kart değerleri, her testin kendi puan formülünün (0–1000) en iyi değerinin 0–99 ölçeğe çevrilmesidir. Norm veya kişiler arası sıralama değildir.</div>';
+html+='<div class="gm-sec"><h4>Görevler</h4>'+quests(p).map(function(x){var d=x.v>=x.g;return'<div class="gm-q'+(d?' ok':'')+'"><span>'+h(x.t)+'</span><span>'+Math.min(x.v,x.g)+'/'+x.g+' · '+x.xp+' XP'+(d?' ✓':'')+'</span></div>';}).join('')+'</div>';
+html+='<div class="gm-sec"><h4>Rozetler ('+Object.keys(p.badges).length+'/'+BADGES.length+')</h4><div class="gm-badges">'+BADGES.map(function(b){return'<div class="gm-b'+(p.badges[b.id]?' got':'')+'"><b>'+h(b.n)+'</b>'+h(b.d)+'</div>';}).join('')+'</div></div>';
+html+='<div class="gm-sec"><h4>İstasyon Haritası</h4><div class="gm-map">'+Object.keys(MODS).map(function(m){var c=catOf(m),pb=p.pb[m+'|R']||p.pb[m+'|Q'];return'<button class="gm-st" data-m="'+m+'"><span class="stars">'+stars(p,m)+'</span><br>'+h(MODS[m].title)+'<small>'+c.st+(pb?' · Rekor '+pb.v:'')+'</small></button>';}).join('')+'</div><div class="gm-note">Yıldız: 1 = tamamlandı, 2 = Güvenilir modda tamamlandı, 3 = Güvenilir modda 3+ geçerli seans. Yıldızlar performansa değil, düzenli ve geçerli ölçüme bağlıdır. Dokunarak testi seçebilirsin.</div></div>';
+var body=document.getElementById('gm-body');body.innerHTML=html;
+Array.prototype.forEach.call(body.querySelectorAll('.gm-st'),function(b){b.addEventListener('click',function(){
+moduleSelect.value=b.getAttribute('data-m');moduleSelect.dispatchEvent(new Event('change'));
+document.getElementById('gm-overlay').classList.remove('open');});});
+document.getElementById('gm-overlay').classList.add('open');
+document.getElementById('gm-overlay').scrollTop=0;
+}
+
+/* ---------- Bağlantılar (mevcut fonksiyonları sarmalar) ---------- */
+function wrap(name,fn){
+try{
+var orig=eval(name);
+if(typeof orig!=='function')throw new Error('yok');
+eval(name+'=function(){return fn(orig,this,arguments);}');
+}catch(e){
+var b=document.getElementById('err-banner');
+if(b){b.style.display='block';b.textContent='Oyun katmanı: "'+name+'" fonksiyonuna bağlanılamadı.';}
+}
+}
+wrap('finishTest',function(o,t,a){var was=S.active;var res=o.apply(t,a);if(was&&on){try{reward();}catch(e){console.error(e);}}return res;});
+wrap('endTrial',function(o,t,a){var res=o.apply(t,a);if(on&&S.active){try{var x=a[0]||{};var pr=x.practice!==undefined?x.practice:isPractice();if(!pr)showCombo(!!x.correct);}catch(e){}}return res;});
+wrap('startTest',function(o,t,a){combo=0;maxCombo=0;return o.apply(t,a);});
+wrap('resetLayout',function(o,t,a){var res=o.apply(t,a);try{if(!S.active)missionBox();}catch(e){}return res;});
+
+/* ---------- Arayüz ---------- */
+var row=document.querySelector('.consent-row');
+if(row)row.insertAdjacentHTML('afterbegin','<label style="color:#ffab40"><input type="checkbox" id="gm-toggle"> Oyun modu</label>');
+var tg=document.getElementById('gm-toggle');
+if(tg){tg.checked=on;tg.addEventListener('change',function(){on=tg.checked;localStorage.setItem(ONKEY,on?'1':'0');refreshBar();if(!S.active)resetLayout(false);});}
+var bar=document.getElementById('gm-bar'),hd=document.querySelector('header');
+if(hd&&bar)hd.insertAdjacentElement('afterend',bar);
+var ctl=document.getElementById('controls');
+if(ctl){var gb=document.createElement('button');gb.id='gm-btn';gb.className='btn-report';gb.style.background='#ef6c00';gb.textContent='Kamp';ctl.insertBefore(gb,document.getElementById('mute-btn'));gb.addEventListener('click',openCamp);}
+document.getElementById('gm-close').addEventListener('click',function(){document.getElementById('gm-overlay').classList.remove('open');});
+var idEl=document.getElementById('athlete-id');if(idEl)idEl.addEventListener('change',function(){refreshBar();if(!S.active)resetLayout(false);});
+refreshBar();
+if(!S.active)resetLayout(false);
+})();
+</script>
