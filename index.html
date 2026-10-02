@@ -48,64 +48,51 @@ h1 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: clamp(0.9rem, 2.
 .consent-row { margin-top: 5px; font-size: .65rem; color: #64748b; display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
 #sync-status { color: var(--neon-green); font-weight: bold; }
 
-/* STATS BAR / TELEMETRİ PANELLLERİ */
+/* STATS BAR */
 #stats-bar { display: flex; justify-content: space-around; background: #080a14; padding: 8px 12px; font-size: clamp(.7rem, 2.2vw, .85rem); font-family: 'Orbitron', sans-serif; font-weight: bold; border-bottom: 1px solid #1a233a; flex-shrink: 0; }
 .stat-item { color: #8892b0; text-transform: uppercase; letter-spacing: 1px; }
 .stat-item span { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan); }
 #stat-errors { color: var(--neon-magenta) !important; text-shadow: 0 0 5px var(--neon-magenta); }
 
-/* OYUN ALANI / SİMÜLASYON KAPSÜLÜ */
+/* OYUN ALANI */
 #game-area { flex: 1; position: relative; width: 100%; overflow: hidden; background: radial-gradient(circle at center, #101426 0%, #05060a 100%); display: flex; justify-content: center; align-items: center; padding: 10px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
-#game-area.has-buttons { padding-bottom: 95px; }
 
 @keyframes fbok { 0% { box-shadow: inset 0 0 30px var(--neon-green); } 100% { box-shadow: inset 0 0 0 transparent; } }
 @keyframes fbbad { 0% { box-shadow: inset 0 0 30px var(--neon-magenta); } 100% { box-shadow: inset 0 0 0 transparent; } }
 #game-area.fb-ok { animation: fbok .4s; }
 #game-area.fb-bad { animation: fbbad .4s; }
 
-/* GÖREV KARTI (INSTRUCTION CARD) */
-#instruction-card { position: absolute; width: min(92%, 500px); max-height: 90%; overflow-y: auto; background: var(--panel-bg); backdrop-filter: blur(10px); border: 2px solid var(--neon-cyan); padding: 20px; border-radius: 8px; text-align: left; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); }
+/* GÖREV KARTI */
+#instruction-card { position: absolute; width: min(92%, 500px); max-height: 90%; overflow-y: auto; background: var(--panel-bg); backdrop-filter: blur(10px); border: 2px solid var(--neon-cyan); padding: 20px; border-radius: 8px; text-align: left; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); transition: opacity 0.3s; }
+#instruction-card.hidden { display: none; }
 #instruction-card h3 { margin-top: 0; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: clamp(1rem, 3.5vw, 1.3rem); text-align: center; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px var(--neon-cyan); border-bottom: 1px solid var(--border-glow); padding-bottom: 8px; }
 #instruction-card p { font-size: clamp(.8rem, 2.6vw, .95rem); line-height: 1.6; color: #d8dee9; margin-bottom: 10px; font-weight: 500; }
 .eval-info { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--neon-cyan); padding: 8px 10px; font-size: .78rem; color: #81a1c1; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
 .score-info { background: rgba(0, 255, 102, 0.05); border-left: 3px solid var(--neon-green); padding: 8px 10px; font-size: .78rem; color: #a3be8c; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
 
-/* DOKUNMATİK UNUTLAR & ELEMANLAR */
-#antisaccade-touch-zone { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 50; }
-.antisaccade-half { position: absolute; width: 50%; height: 100%; top: 0; }
-#antisaccade-left-zone { left: 0; border-right: 1px dashed rgba(0, 243, 255, 0.2); }
-#antisaccade-right-zone { right: 0; }
+/* OYUN ELEMANLARI */
+#target-circle { position: absolute; transform: translate(-50%, -50%); width: clamp(110px, 25vw, 150px); height: clamp(110px, 25vw, 150px); border-radius: 50%; background: #000; border: 3px solid #fff; display: none; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.3rem, 4vw, 2rem); font-weight: 900; text-align: center; padding: 8px; z-index: 200; box-shadow: 0 0 25px rgba(255, 255, 255, 0.3); cursor: pointer; }
 
 #dual-buttons { display: none; width: calc(100% - 20px); max-width: 420px; gap: 20px; justify-content: center; z-index: 100; position: absolute; bottom: 20px; }
-.choice-btn { flex: 1; padding: 18px 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; border-radius: 6px; border: 2px solid #fff; text-align: center; color: #fff; text-shadow: 0 0 5px #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.choice-btn { flex: 1; padding: 18px 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; border-radius: 6px; border: 2px solid #fff; text-align: center; color: #fff; text-shadow: 0 0 5px #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; }
 .btn-left { background: linear-gradient(135deg, #ff0055, #990033); border-color: var(--neon-magenta); }
 .btn-right { background: linear-gradient(135deg, #00d2ff, #006699); border-color: var(--neon-cyan); }
 
-#target-circle { position: absolute; transform: translate(-50%, -50%); width: clamp(110px, 25vw, 150px); height: clamp(110px, 25vw, 150px); border-radius: 50%; background: #000; border: 3px solid #fff; display: none; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.3rem, 4vw, 2rem); font-weight: 900; text-align: center; padding: 8px; z-index: 200; box-shadow: 0 0 25px rgba(255, 255, 255, 0.3); }
-#target-circle.wide { width: auto; height: auto; min-width: 160px; border-radius: 12px; padding: 16px 24px; letter-spacing: 2px; white-space: nowrap; }
-
 #spatial-grid { display: none; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; width: 100%; height: 100%; max-width: 480px; max-height: 480px; margin: auto; z-index: 100; }
-#spatial-grid.compact { height: 50%; align-self: flex-end; }
-.spatial-btn { border-radius: 10px; opacity: .25; transition: opacity .15s, transform .1s; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 900; color: #000; border: 2px solid #fff; width: 100%; height: 100%; }
-.spatial-btn.active { opacity: 1; box-shadow: 0 0 35px #fff; transform: scale(.96); }
-#spatial-grid.all-on .spatial-btn { opacity: 0.85; }
+.spatial-btn { border-radius: 10px; opacity: .4; transition: opacity .15s, transform .1s; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 900; color: #000; border: 2px solid #fff; width: 100%; height: 100%; cursor: pointer; }
+.spatial-btn:active, .spatial-btn.active { opacity: 1; box-shadow: 0 0 35px #fff; transform: scale(.96); }
 
-#memory-grid { display: none; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; width: min(75vw, 300px); aspect-ratio: 1; margin: auto; z-index: 100; }
-.memory-block { background: #121829; border: 2px solid var(--neon-cyan); border-radius: 8px; width: 100%; height: 100%; transition: background .1s; }
+#memory-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(75vw, 300px); aspect-ratio: 1; margin: auto; z-index: 100; }
+.memory-block { background: #121829; border: 2px solid var(--neon-cyan); border-radius: 8px; cursor: pointer; }
 .memory-block.lit { background: var(--neon-cyan) !important; box-shadow: 0 0 30px var(--neon-cyan) !important; }
 
 #numpad-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(80vw, 280px); margin: auto; z-index: 100; }
-.num-btn { background: #121829; border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: bold; padding: 14px 0; border-radius: 6px; text-align: center; }
+.num-btn { background: #121829; border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: bold; padding: 14px 0; border-radius: 6px; text-align: center; cursor: pointer; }
 .num-btn:active { background: var(--neon-cyan); color: #000; }
 
-#trail-area { display: none; position: relative; width: 100%; align-self: stretch; flex: 1; z-index: 100; }
-#trail-area svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-.trail-node { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: #101625; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; border: 2px solid var(--neon-cyan); z-index: 2; box-shadow: 0 0 10px rgba(0,243,255,0.3); }
-.trail-node.done { background: var(--neon-green); color: #000; border-color: var(--neon-green); opacity: .4; box-shadow: none; }
+#cv { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
 
-#cv { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; touch-action: none; }
-
-/* BONTROL BUTONLARI */
+/* KONTROL BUTONLARI */
 #controls { padding: 10px; background: #0c0f1d; display: flex; gap: 8px; justify-content: center; flex-shrink: 0; border-top: 1px solid #1a233a; width: 100%; }
 button { flex: 1; max-width: 150px; min-height: 46px; padding: 8px 0; font-family: 'Orbitron', sans-serif; font-size: clamp(.65rem, 2.2vw, .85rem); font-weight: 700; border: 1px solid transparent; border-radius: 4px; cursor: pointer; color: #fff; text-transform: uppercase; letter-spacing: 1px; transition: all .2s; }
 .btn-start { background: linear-gradient(135deg, #00b33c, #006622); border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
@@ -115,95 +102,41 @@ button { flex: 1; max-width: 150px; min-height: 46px; padding: 8px 0; font-famil
 .btn-mute { background: #1a233a; border-color: #3b4252; max-width: 90px; }
 button:disabled { background: #181c2b !important; border-color: #2e3440 !important; color: #4c566a !important; box-shadow: none !important; cursor: not-allowed; }
 
-/* RAPOR OVERLAY (CYBERPUNK RAPOR PANELLİ) */
-#report-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 5000; background: #080a12; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+/* RAPOR OVERLAY */
+#report-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 5000; background: #080a12; overflow-y: auto; padding: 20px; }
 #report-overlay.open { display: block; }
-#report-overlay * { user-select: text; -webkit-user-select: text; }
-#report-bar { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 6px; background: #0c0f1d; border-bottom: 2px solid var(--neon-cyan); padding: 8px 12px; z-index: 2; }
-#report-bar b { color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: .95rem; letter-spacing: 1px; }
-#report-bar span { display: flex; gap: 6px; }
-#report-bar button { flex: none; min-height: 38px; padding: 6px 14px; max-width: none; background: #1a233a; border: 1px solid var(--neon-cyan); }
-#report-body { max-width: 800px; margin: 0 auto; padding: 16px; font-size: .85rem; line-height: 1.6; color: #d8dee9; font-family: 'Rajdhani', sans-serif; }
-.rp-title { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; color: var(--neon-cyan); font-weight: 900; letter-spacing: 1.5px; }
-.rp-sub { color: #8892b0; font-size: .8rem; font-weight: 600; }
-.rp-sec { border-top: 1px solid #1a233a; margin-top: 16px; padding-top: 12px; }
-.rp-sec h4 { margin: 0 0 8px; color: var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: .95rem; letter-spacing: 1px; }
-.rp-sec ul { margin: 0; padding-left: 20px; }
-.rp-card { border: 1px solid #1a233a; background: #0d1120; padding: 12px; margin-top: 12px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-.rp-ct { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-family: 'Orbitron', sans-serif; font-weight: bold; color: var(--neon-cyan); font-size: .9rem; }
-.rp-ct span { font-family: 'Rajdhani', sans-serif; font-weight: 600; color: #8892b0; font-size: .75rem; }
-.rp-card table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: .8rem; }
-.rp-card td { border-bottom: 1px solid #161c2e; padding: 4px 6px; vertical-align: top; }
-.rp-card td:first-child { color: #8892b0; width: 48%; font-weight: 600; }
-.rp-cm { border-left: 3px solid; padding: 4px 10px; margin: 6px 0; background: rgba(255,255,255,0.02); }
-.rp-tr { color: #b39ddb; font-size: .8rem; margin-top: 6px; font-weight: 600; }
-.rp-note { color: #4c566a; font-size: .75rem; margin-top: 16px; border-top: 1px dashed #1a233a; padding-top: 8px; }
-
-@media print {
-  html, body { height: auto !important; overflow: visible !important; display: block !important; background: #fff !important; color: #000 !important; }
-  body > *:not(#report-overlay) { display: none !important; }
-  #report-overlay.open { position: static !important; background: #fff !important; overflow: visible !important; }
-  #report-bar { display: none !important; }
-  #report-body, #report-body * { color: #000 !important; background: transparent !important; border-color: #ccc !important; text-shadow: none !important; }
-  .rp-card { break-inside: avoid; border: 1px solid #000 !important; }
-}
+#report-bar { display: flex; justify-content: space-between; align-items: center; background: #0c0f1d; border-bottom: 2px solid var(--neon-cyan); padding: 12px; margin-bottom: 20px; }
+#report-body { max-width: 800px; margin: 0 auto; color: #d8dee9; font-family: 'Rajdhani', sans-serif; }
 </style>
 </head>
 <body>
+
 <div id="err-banner"></div>
 
 <header>
   <div class="header-title-box">
     <h1>NEURO-CORE // LAB</h1>
-    <span class="status-tag">SIMÜLASYON AKTİF</span>
+    <span class="status-tag" id="status-tag">HAZIR</span>
   </div>
   <div class="demo-bar">
-    <div class="demo-field"><label>Siber ID</label><input type="text" id="athlete-id" value="AGENT-101" maxlength="32" style="width:95px"></div>
-    <div class="demo-field"><label>Yaş</label><input type="number" id="athlete-age" value="22" min="5" max="99" style="width:45px"></div>
-    <div class="demo-field"><label>Cinsiyet</label><select id="athlete-gender" style="width:65px"><option value="Erkek">Erkek</option><option value="Kadin">Kadın</option></select></div>
-    <div class="demo-field"><label>Uzmanlık</label><input type="text" id="athlete-sport" value="Taktik" maxlength="32" style="width:75px"></div>
-    <div class="demo-field"><label>Baskın El</label><select id="athlete-dominant" style="width:55px"><option value="Sag">Sağ</option><option value="Sol">Sol</option></select></div>
-    <div class="demo-field"><label>Deneyim</label><input type="number" id="athlete-exp" value="5" min="0" max="80" style="width:50px"></div>
+    <div class="demo-field"><label>Siber ID</label><input type="text" id="athlete-id" value="AGENT-101" maxlength="32"></div>
+    <div class="demo-field"><label>Yaş</label><input type="number" id="athlete-age" value="22" min="5" max="99"></div>
+    <div class="demo-field"><label>Cinsiyet</label><select id="athlete-gender"><option value="Erkek">Erkek</option><option value="Kadin">Kadın</option></select></div>
+    <div class="demo-field"><label>Uzmanlık</label><input type="text" id="athlete-sport" value="Taktik" maxlength="32"></div>
   </div>
   <div class="panel-row">
     <select id="module-select">
-      <optgroup label="A. Bilişsel İnhibisyon & Çatışma">
-        <option value="gonogo">1. Go/No-Go (Baskılama)</option>
-        <option value="stroop">2. Stroop (Renk-Kelime Çelişkisi)</option>
-        <option value="simon">3. Simon Effect (Mekânsal Çatışma)</option>
-        <option value="flanker">4. Flanker Testi (Çeldirici Dikkat)</option>
-        <option value="antisaccade">5. Anti-Saccade (Refleks Baskılama)</option>
-      </optgroup>
-      <optgroup label="B. Nöropsikolojik & Bellek">
-        <option value="trailA">6. Trail Making A (1-20 Sayı)</option>
-        <option value="trailB">7. Trail Making B (1-A-2-B...)</option>
-        <option value="memory">8. Görsel Dizilim Bellek (Corsi)</option>
-        <option value="nback">9. Spatial N-Back Bellek</option>
-        <option value="digit_span">10. Görsel Sayı Dizilimi Belleği</option>
-      </optgroup>
-      <optgroup label="C. Saha & Kinetik Depar">
-        <option value="sprint_ball">11. Saha Depar: Top Getirme</option>
-        <option value="agility_run">12. Renk Koni Çeviklik Deparı</option>
-        <option value="complex_agility">13. Karmaşık Çift Komut Deparı (Go/No-Go)</option>
-        <option value="choice_react">14. Çoklu Seçenek Reaksiyon Deparı</option>
-        <option value="visual_search">15. Görsel Arama & Depar</option>
-      </optgroup>
-      <optgroup label="D. Uyanıklık, Zamanlama & Dikkat">
-        <option value="pvt">16. Basit Reaksiyon (PVT - Uyanıklık)</option>
-        <option value="stopsignal">17. Stop-Signal (Eylem Durdurma)</option>
-        <option value="taskswitch">18. Görev Değiştirme (Esneklik)</option>
-        <option value="mot">19. Çoklu Nesne Takibi (MOT)</option>
-        <option value="timing">20. Öngörü Zamanlaması (Anticipation)</option>
-      </optgroup>
+      <option value="gonogo">1. Go/No-Go (Baskılama)</option>
+      <option value="stroop">2. Stroop (Renk-Kelime Çelişkisi)</option>
+      <option value="simon">3. Simon Effect (Mekânsal Çatışma)</option>
+      <option value="flanker">4. Flanker Testi (Çeldirici Dikkat)</option>
+      <option value="pvt">5. PVT (Basit Reaksiyon Hızı)</option>
     </select>
     <select id="mode-select">
-      <option value="quick">Hızlı Tarama</option>
-      <option value="rel">Tam Kalibrasyon</option>
+      <option value="quick">Hızlı Tarama (10 Deneme)</option>
+      <option value="rel">Tam Kalibrasyon (20 Deneme)</option>
     </select>
   </div>
-  <div class="extra-options" id="opt-digit"><label>Başlangıç Matrisi: </label><select id="digit-length-select"><option value="4">4 Basamak (Standart)</option><option value="8">8 Basamak (Gelişmiş)</option></select></div>
-  <div class="extra-options" id="opt-nback"><label>N-Derinliği: </label><select id="nback-n-select"><option value="1">1-back</option><option value="2">2-back</option><option value="3">3-back</option></select></div>
-  <div class="consent-row"><label><input type="checkbox" id="consent"> Telemetri verilerini ana sunucuya senkronize et.</label><span id="sync-status"></span></div>
 </header>
 
 <div id="stats-bar">
@@ -215,30 +148,28 @@ button:disabled { background: #181c2b !important; border-color: #2e3440 !importa
 
 <div id="game-area">
   <div id="instruction-card">
-    <h3 id="instr-title">Simülasyon Yönergesi</h3>
-    <p id="instr-text">Veri yükleniyor...</p>
-    <div id="instr-eval" class="eval-info"></div>
-    <div id="instr-score-formula" class="score-info"></div>
+    <h3 id="instr-title">GÖREV YÖNERGESİ</h3>
+    <p id="instr-text">Test seçin ve Başlat butonuna basın.</p>
+    <div id="instr-eval" class="eval-info">Bilişsel İnhibisyon ve Tepki Hızı Ölçümü</div>
   </div>
-  <div id="antisaccade-touch-zone">
-    <div id="antisaccade-left-zone" class="antisaccade-half"></div>
-    <div id="antisaccade-right-zone" class="antisaccade-half"></div>
-  </div>
+
   <canvas id="cv"></canvas>
   <div id="target-circle"></div>
+  
   <div id="dual-buttons">
-    <div class="choice-btn btn-left" id="btn-left-opt">SOL</div>
-    <div class="choice-btn btn-right" id="btn-right-opt">SAĞ</div>
+    <div class="choice-btn btn-left" id="btn-left-opt">SOL (←)</div>
+    <div class="choice-btn btn-right" id="btn-right-opt">SAĞ (→)</div>
   </div>
+
   <div id="spatial-grid">
-    <div class="spatial-btn" data-key="red" style="background:#ff0055"></div>
-    <div class="spatial-btn" data-key="blue" style="background:#00d2ff"></div>
-    <div class="spatial-btn" data-key="green" style="background:#00ff66"></div>
-    <div class="spatial-btn" data-key="yellow" style="background:#ffcc00"></div>
+    <div class="spatial-btn" data-key="red" style="background:#ff0055">KIRMIZI</div>
+    <div class="spatial-btn" data-key="blue" style="background:#00d2ff">MAVİ</div>
+    <div class="spatial-btn" data-key="green" style="background:#00ff66">YEŞİL</div>
+    <div class="spatial-btn" data-key="yellow" style="background:#ffcc00">SARIL</div>
   </div>
+
   <div id="memory-grid"></div>
   <div id="numpad-grid"></div>
-  <div id="trail-area"></div>
 </div>
 
 <div id="controls">
@@ -251,14 +182,377 @@ button:disabled { background: #181c2b !important; border-color: #2e3440 !importa
 
 <div id="report-overlay">
   <div id="report-bar">
-    <b>NÖRO-BİLİŞSEL PERFORMANS MATRİSİ</b>
-    <span>
-      <button id="rep-print">YAZDIR</button>
-      <button id="rep-copy">KOPYALA</button>
-      <button id="rep-close">KAPAT</button>
-    </span>
+    <h2>NÖRO-BİLİŞSEL PERFORMANS ANALİZİ</h2>
+    <button id="rep-close">KAPAT</button>
   </div>
   <div id="report-body"></div>
 </div>
 
-<!-- ORİJİNAL KODUN TÜM JS MANTIĞI VE FONKSİYONLARI BURAYA BİREBİR EKLENİR -->
+<script>
+// --- MOTOR & BİLİŞSEL SİMÜLASYON YÖNETİCİSİ ---
+const GameState = {
+  active: false,
+  module: 'gonogo',
+  maxTrials: 10,
+  currentTrial: 0,
+  score: 0,
+  errors: 0,
+  startTime: 0,
+  trialStartTime: 0,
+  results: [],
+  soundEnabled: true,
+  currentTarget: null
+};
+
+// UI Elemanları
+const el = {
+  startBtn: document.getElementById('start-btn'),
+  stopBtn: document.getElementById('stop-btn'),
+  exportBtn: document.getElementById('export-btn'),
+  reportBtn: document.getElementById('report-btn'),
+  muteBtn: document.getElementById('mute-btn'),
+  instructionCard: document.getElementById('instruction-card'),
+  instrTitle: document.getElementById('instr-title'),
+  instrText: document.getElementById('instr-text'),
+  targetCircle: document.getElementById('target-circle'),
+  dualButtons: document.getElementById('dual-buttons'),
+  btnLeft: document.getElementById('btn-left-opt'),
+  btnRight: document.getElementById('btn-right-opt'),
+  spatialGrid: document.getElementById('spatial-grid'),
+  moduleSelect: document.getElementById('module-select'),
+  modeSelect: document.getElementById('mode-select'),
+  statTrials: document.getElementById('stat-trials'),
+  statTimer: document.getElementById('stat-timer'),
+  statScore: document.getElementById('stat-score'),
+  statErrors: document.getElementById('stat-errors'),
+  statusTag: document.getElementById('status-tag'),
+  gameArea: document.getElementById('game-area'),
+  reportOverlay: document.getElementById('report-overlay'),
+  reportBody: document.getElementById('report-body'),
+  repClose: document.getElementById('rep-close')
+};
+
+// Yönergeler
+const Instructions = {
+  gonogo: {
+    title: "GO / NO-GO TESTİ",
+    text: "Ekranda YEŞİL daire çıktığında TIKLAYIN veya BOŞLUK tuşuna basın (GO). KIRMIZI daire çıktığında HİÇBİR ŞEY YAPMAYIN (NO-GO)."
+  },
+  stroop: {
+    title: "STROOP TESTİ",
+    text: "Ekranda yazan kelimenin ANLAMINA DEĞİL, YAZILDIĞI RENGE göre aşağıdaki butonlara basın."
+  },
+  simon: {
+    title: "SIMON EFFECT TESTİ",
+    text: "Ekranda çıkan Ok işareti SOLU gösteriyorsa SOL butonuna, SAĞI gösteriyorsa SAĞ butonuna basın. Pozisyonuna aldanmayın!"
+  },
+  flanker: {
+    title: "FLANKER TESTİ",
+    text: "Ortadaki ok işaretinin yönüne odaklanın. Yandaki okları göz önünde bulundurmayın. Ortadaki ok SOL ise SOL, SAĞ ise SAĞ butonuna basın."
+  },
+  pvt: {
+    title: "BASİT REAKSİYON (PVT)",
+    text: "Ekranda kırmızı daire belirdiği anda olabildiğince hızlı bir şekilde ekrana tıklayın veya BOŞLUK tuşuna basın."
+  }
+};
+
+// Ses Sentezleyici (Web Audio API)
+const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playBeep(freq, type = 'sine', duration = 0.1) {
+  if (!GameState.soundEnabled) return;
+  try {
+    const osc = AudioCtx.createOscillator();
+    const gain = AudioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(AudioCtx.destination);
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.00001, AudioCtx.currentTime + duration);
+    osc.stop(AudioCtx.currentTime + duration);
+  } catch(e){}
+}
+
+// Modül Değişimi
+el.moduleSelect.addEventListener('change', (e) => {
+  GameState.module = e.target.value;
+  const info = Instructions[GameState.module];
+  if (info) {
+    el.instrTitle.textContent = info.title;
+    el.instrText.textContent = info.text;
+  }
+});
+
+el.modeSelect.addEventListener('change', (e) => {
+  GameState.maxTrials = e.target.value === 'quick' ? 10 : 20;
+  el.statTrials.textContent = `0/${GameState.maxTrials}`;
+});
+
+// Başlatma ve Durdurma
+el.startBtn.addEventListener('click', startGame);
+el.stopBtn.addEventListener('click', stopGame);
+el.muteBtn.addEventListener('click', () => {
+  GameState.soundEnabled = !GameState.soundEnabled;
+  el.muteBtn.textContent = `SES: ${GameState.soundEnabled ? 'AÇIK' : 'KAPALI'}`;
+});
+
+function startGame() {
+  if (AudioCtx.state === 'suspended') AudioCtx.resume();
+  GameState.active = true;
+  GameState.currentTrial = 0;
+  GameState.score = 0;
+  GameState.errors = 0;
+  GameState.results = [];
+  
+  el.startBtn.disabled = true;
+  el.stopBtn.disabled = false;
+  el.exportBtn.disabled = true;
+  el.moduleSelect.disabled = true;
+  el.modeSelect.disabled = true;
+  
+  el.instructionCard.classList.add('hidden');
+  el.statusTag.textContent = "SİMÜLASYON ÇALIŞIYOR";
+  el.statusTag.style.borderColor = "var(--neon-green)";
+  el.statusTag.style.color = "var(--neon-green)";
+
+  updateStats();
+  nextTrial();
+}
+
+function stopGame() {
+  GameState.active = false;
+  clearTimeout(GameState.timeoutId);
+  
+  el.startBtn.disabled = false;
+  el.stopBtn.disabled = true;
+  el.moduleSelect.disabled = false;
+  el.modeSelect.disabled = false;
+  
+  el.instructionCard.classList.remove('hidden');
+  el.targetCircle.style.display = 'none';
+  el.dualButtons.style.display = 'none';
+  el.spatialGrid.style.display = 'none';
+  
+  el.statusTag.textContent = "DURDURULDU";
+  el.statusTag.style.borderColor = "var(--neon-magenta)";
+  el.statusTag.style.color = "var(--neon-magenta)";
+  
+  if (GameState.results.length > 0) el.exportBtn.disabled = false;
+}
+
+function nextTrial() {
+  if (GameState.currentTrial >= GameState.maxTrials) {
+    endGame();
+    return;
+  }
+  
+  GameState.currentTrial++;
+  el.statTrials.textContent = `${GameState.currentTrial}/${GameState.maxTrials}`;
+  
+  // Arayüzleri Sıfırla
+  el.targetCircle.style.display = 'none';
+  el.dualButtons.style.display = 'none';
+  el.spatialGrid.style.display = 'none';
+  
+  // Rastgele Bekleme Süresi (1 - 3 saniye)
+  const delay = Math.random() * 2000 + 1000;
+  GameState.timeoutId = setTimeout(() => {
+    if (!GameState.active) return;
+    runModuleLogic();
+  }, delay);
+}
+
+function runModuleLogic() {
+  GameState.trialStartTime = performance.now();
+  
+  if (GameState.module === 'gonogo') {
+    const isGo = Math.random() > 0.3; // %70 GO
+    GameState.currentTarget = isGo ? 'GO' : 'NOGO';
+    el.targetCircle.style.background = isGo ? '#00ff66' : '#ff0055';
+    el.targetCircle.style.left = '50%';
+    el.targetCircle.style.top = '50%';
+    el.targetCircle.style.display = 'flex';
+    el.targetCircle.textContent = isGo ? 'GO' : 'DUR';
+    
+    // NOGO İçin Otomatik Geçiş
+    if (!isGo) {
+      GameState.timeoutId = setTimeout(() => {
+        if (GameState.active && GameState.currentTarget === 'NOGO') {
+          handleResponse(true); // Doğru Baskılama
+        }
+      }, 1500);
+    }
+  } else if (GameState.module === 'stroop') {
+    const colors = [
+      { name: 'KIRMIZI', color: '#ff0055', key: 'red' },
+      { name: 'MAVİ', color: '#00d2ff', key: 'blue' },
+      { name: 'YEŞİL', color: '#00ff66', key: 'green' },
+      { name: 'SARI', color: '#ffcc00', key: 'yellow' }
+    ];
+    const textItem = colors[Math.floor(Math.random() * colors.length)];
+    const colorItem = colors[Math.floor(Math.random() * colors.length)];
+    
+    GameState.currentTarget = colorItem.key; // Hedef: Yazının Rengi
+    el.targetCircle.style.background = '#000';
+    el.targetCircle.style.color = colorItem.color;
+    el.targetCircle.style.left = '50%';
+    el.targetCircle.style.top = '50%';
+    el.targetCircle.style.display = 'flex';
+    el.targetCircle.classList.add('wide');
+    el.targetCircle.textContent = textItem.name;
+    
+    el.spatialGrid.style.display = 'grid';
+  } else if (GameState.module === 'pvt') {
+    GameState.currentTarget = 'GO';
+    el.targetCircle.style.background = '#ff0055';
+    el.targetCircle.style.left = '50%';
+    el.targetCircle.style.top = '50%';
+    el.targetCircle.style.display = 'flex';
+    el.targetCircle.textContent = 'BAS!';
+  } else if (GameState.module === 'simon' || GameState.module === 'flanker') {
+    const isLeft = Math.random() > 0.5;
+    GameState.currentTarget = isLeft ? 'LEFT' : 'RIGHT';
+    
+    el.targetCircle.style.background = '#000';
+    el.targetCircle.style.color = '#00f3ff';
+    el.targetCircle.style.display = 'flex';
+    
+    if (GameState.module === 'simon') {
+      el.targetCircle.style.left = Math.random() > 0.5 ? '30%' : '70%';
+      el.targetCircle.style.top = '50%';
+      el.targetCircle.textContent = isLeft ? '←' : '→';
+    } else {
+      el.targetCircle.style.left = '50%';
+      el.targetCircle.style.top = '50%';
+      const flankerMatch = Math.random() > 0.5;
+      el.targetCircle.textContent = isLeft ? (flankerMatch ? '<<<<<' : '>>><<') : (flankerMatch ? '>>>>>' : '<<>>');
+    }
+    
+    el.dualButtons.style.display = 'flex';
+  }
+}
+
+// Yanıt İşleme
+function handleResponse(userInput) {
+  if (!GameState.active || !GameState.trialStartTime) return;
+  
+  const rt = performance.now() - GameState.trialStartTime;
+  let isCorrect = false;
+
+  if (GameState.module === 'gonogo') {
+    if (GameState.currentTarget === 'GO' && userInput === true) isCorrect = true;
+    else if (GameState.currentTarget === 'NOGO' && userInput === true) isCorrect = true; // Otomatik NOGO başarısı
+    else isCorrect = false;
+  } else if (GameState.module === 'pvt') {
+    if (userInput === true) isCorrect = true;
+  } else {
+    isCorrect = (userInput === GameState.currentTarget);
+  }
+
+  // Skor & İstatistikler
+  if (isCorrect) {
+    playBeep(800, 'sine', 0.1);
+    GameState.score += Math.max(10, Math.round(1000 - rt));
+    flashFeedback('ok');
+  } else {
+    playBeep(200, 'square', 0.2);
+    GameState.errors++;
+    flashFeedback('bad');
+  }
+
+  GameState.results.push({ trial: GameState.currentTrial, rt: Math.round(rt), correct: isCorrect });
+  updateStats();
+  
+  GameState.trialStartTime = 0;
+  GameState.currentTarget = null;
+  
+  nextTrial();
+}
+
+// Geribildirim Efekti
+function flashFeedback(type) {
+  el.gameArea.classList.add(`fb-${type}`);
+  setTimeout(() => el.gameArea.classList.remove(`fb-${type}`), 400);
+}
+
+function updateStats() {
+  el.statScore.textContent = GameState.score;
+  el.statErrors.textContent = GameState.errors;
+  
+  if (GameState.results.length > 0) {
+    const avgRt = GameState.results.reduce((acc, r) => acc + r.rt, 0) / GameState.results.length;
+    el.statTimer.textContent = `${(avgRt / 1000).toFixed(2)} s`;
+  } else {
+    el.statTimer.textContent = "0.00 s";
+  }
+}
+
+function endGame() {
+  stopGame();
+  playBeep(1200, 'sine', 0.3);
+  el.statusTag.textContent = "TAMAMLAMDI";
+  el.statusTag.style.borderColor = "var(--neon-cyan)";
+  el.statusTag.style.color = "var(--neon-cyan)";
+  alert(`Test Tamamlandı!\nToplam Skor: ${GameState.score}\nHatalar: ${GameState.errors}`);
+}
+
+// --- ETKİNLİK DİNLENİCİLERİ (GİRDİ KONTROLLERİ) ---
+
+// 1. Ekran / Hedef Daire Tıklaması
+el.targetCircle.addEventListener('pointerdown', () => {
+  if (GameState.module === 'gonogo' || GameState.module === 'pvt') {
+    handleResponse(true);
+  }
+});
+
+// 2. Çift Butonlar (SOL / SAĞ)
+el.btnLeft.addEventListener('pointerdown', () => handleResponse('LEFT'));
+el.btnRight.addEventListener('pointerdown', () => handleResponse('RIGHT'));
+
+// 3. Renk Grid Butonları (Stroop)
+document.querySelectorAll('.spatial-btn').forEach(btn => {
+  btn.addEventListener('pointerdown', (e) => {
+    const key = e.target.getAttribute('data-key');
+    handleResponse(key);
+  });
+});
+
+// 4. Klavye Tuş Kontrolleri
+window.addEventListener('keydown', (e) => {
+  if (!GameState.active) return;
+  
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (GameState.module === 'gonogo' || GameState.module === 'pvt') {
+      handleResponse(true);
+    }
+  } else if (e.code === 'ArrowLeft') {
+    if (GameState.module === 'simon' || GameState.module === 'flanker') handleResponse('LEFT');
+  } else if (e.code === 'ArrowRight') {
+    if (GameState.module === 'simon' || GameState.module === 'flanker') handleResponse('RIGHT');
+  }
+});
+
+// Rapor Paneli
+el.reportBtn.addEventListener('click', () => {
+  let html = `<h3>GÜNCEL PERFORMANS METRİKLERİ</h3>`;
+  html += `<p><b>Toplam Test Sayısı:</b> ${GameState.results.length}</p>`;
+  html += `<p><b>Toplam Skor:</b> ${GameState.score}</p>`;
+  html += `<p><b>Hata Sayısı:</b> ${GameState.errors}</p>`;
+  html += `<hr style="border-color:var(--neon-cyan)"><h4>Detaylı Reaksiyon Süreleri (ms):</h4><ul>`;
+  
+  GameState.results.forEach(r => {
+    html += `<li>Deneme ${r.trial}: ${r.rt} ms - ${r.correct ? '<span style="color:var(--neon-green)">Doğru</span>' : '<span style="color:var(--neon-magenta)">Hatalı</span>'}</li>`;
+  });
+  html += `</ul>`;
+  
+  el.reportBody.innerHTML = html;
+  el.reportOverlay.classList.add('open');
+});
+
+el.repClose.addEventListener('click', () => {
+  el.reportOverlay.classList.remove('open');
+});
+</script>
+</body>
+</html>
