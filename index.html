@@ -901,12 +901,13 @@ function updateModuleUI() {
     $('opt-nback').style.display = key === 'nback' ? 'flex' : 'none';
     
     hideStim();
-    if (typeof missionBox === 'function') missionBox();
+    if (typeof window.missionBox === 'function') window.missionBox();
 }
 
 moduleSelect.addEventListener('change', updateModuleUI);
 
 const addMultiListener = (el, fn) => {
+    if(!el) return;
     el.addEventListener('pointerdown', fn);
     el.addEventListener('click', fn);
 };
@@ -1028,8 +1029,8 @@ var KEY='spplab_game_v1', ONKEY='spplab_gm_on';
 var on = localStorage.getItem(ONKEY) === '1';
 var combo = 0, maxCombo = 0;
 
-function loadAll(){ try{return JSON.parse(localStorage.getItem(KEY)| me||'{}');}catch(e){return {};} }
-function saveAll(d){ try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){} }
+function loadAll(){ try{ return JSON.parse(localStorage.getItem(KEY) || '{}'); }catch(e){ return {}; } }
+function saveAll(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
 function getP(id){ var d=loadAll(); if(!d[id]) d[id]={xp:0,badges:{},pb:{},best:{},done:{},sess:[],claimed:{},pbCount:0}; return {d:d, p:d[id]}; }
 function curId(){ var e=document.getElementById('athlete-id'); return e?e.value.trim():'SP-101'; }
 function h(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1161,7 +1162,7 @@ window.missionBox = function(){
     instructionCard.insertAdjacentHTML('beforeend', html);
 };
 
-/* --- Güvenli Fonksiyon Kapsama Bağlayıcıları (Sonsuz döngüyü engeller) --- */
+/* --- Güvenli Fonksiyon Kapsama Bağlayıcıları --- */
 var _origFinishTest = finishTest;
 finishTest = function() {
     _origFinishTest();
