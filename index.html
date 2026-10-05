@@ -3,556 +3,330 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0d0e15">
-<title>NEURO-CORE // Bilişsel Performans Laboratuvarı</title>
+<title>SPPLab Kids - Bilişsel Araba Yarışı</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap');
+  *{box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+  html,body{width:100%;height:100%;margin:0;padding:0;background:#1a1c23;color:#fff;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;display:flex;flex-direction:column;overflow:hidden}
 
-:root {
-  --neon-cyan: #00f3ff;
-  --neon-magenta: #ff0055;
-  --neon-green: #00ff66;
-  --neon-yellow: #ffcc00;
-  --bg-dark: #08090f;
-  --panel-bg: rgba(16, 20, 31, 0.85);
-  --border-glow: rgba(0, 243, 255, 0.3);
-}
+  /* Çocuk Dostu Arayüz Elemanları */
+  header{background:#252836;padding:10px;text-align:center;border-bottom:3px solid #ffcc00;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
+  h1{margin:0;font-size:clamp(1.1rem,4vw,1.5rem);color:#ffcc00;text-transform:uppercase;letter-spacing:1px;text-shadow:2px 2px #000}
+  
+  .kids-bar{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:6px}
+  .kids-field{display:flex;align-items:center;background:#14161d;padding:4px 8px;border-radius:20px;border:1px solid #ffcc00}
+  .kids-field label{font-size:.75rem;color:#ffcc00;margin-right:4px;font-weight:bold}
+  .kids-field input, .kids-field select{background:transparent;color:#fff;border:none;font-size:.8rem;outline:none;font-weight:bold}
 
-* { box-sizing: border-box; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
-html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: var(--bg-dark); color: #eceff4; font-family: 'Rajdhani', -apple-system, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+  #stats-bar{display:flex;justify-content:space-around;background:#2d3243;padding:10px;font-size:clamp(.8rem,2.5vw,1rem);font-weight:bold;border-bottom:2px solid #3b4259}
+  .stat-card{background:#1e222d;padding:4px 12px;border-radius:12px;border:1px solid #4f5875;display:flex;align-items:center;gap:6px}
+  .stat-card span{color:#00ff88;font-size:1.1em}
 
-/* CRT Scanline ve Grid Efekti */
-body::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)); z-index: 9999; background-size: 100% 3px, 6px 100%; pointer-events: none; }
+  #game-area{flex:1;position:relative;width:100%;background:#11141c;display:flex;justify-content:center;align-items:center;overflow:hidden}
 
-#err-banner { display: none; background: var(--neon-magenta); color: #fff; font-size: .75rem; padding: 6px 12px; user-select: text; -webkit-user-select: text; flex-shrink: 0; font-family: 'Orbitron', monospace; }
+  /* Yol & Yarış Teması */
+  .road-background{position:absolute;width:100%;height:100%;background:linear-gradient(to bottom, #2c3e50 0%, #000000 100%);display:flex;justify-content:center}
+  .lane-markings{width:10px;height:100%;background:repeating-linear-gradient(to bottom, #fff 0px, #fff 30px, transparent 30px, transparent 60px);animation:roadMove 0.8s linear infinite}
+  @keyframes roadMove { from{background-position:0 0} to{background-position:0 60px} }
 
-/* HEADER / HUD BARI */
-header { background: #0c0f1d; padding: 8px 12px; border-bottom: 2px solid var(--neon-cyan); box-shadow: 0 0 15px var(--border-glow); flex-shrink: 0; z-index: 10; }
-.header-title-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-h1 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: clamp(0.9rem, 2.5vw, 1.3rem); color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 8px var(--neon-cyan); }
-.status-tag { font-family: 'Orbitron', monospace; font-size: 0.65rem; background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 2px 6px; border-radius: 3px; }
+  /* Arabalar */
+  #player-car{position:absolute;bottom:30px;width:90px;height:140px;font-size:80px;text-align:center;line-height:140px;transition:transform 0.1s;z-index:10;cursor:pointer;filter:drop-shadow(0 10px 8px rgba(0,0,0,0.5))}
+  #player-car.bounce{animation:carBounce 0.3s ease}
+  @keyframes carBounce { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
 
-.demo-bar { display: flex; gap: 6px; justify-content: center; align-items: center; width: 100%; flex-wrap: wrap; margin-bottom: 6px; }
-.demo-field { display: flex; flex-direction: column; align-items: flex-start; }
-.demo-field label { font-size: 0.6rem; color: #8892b0; margin-bottom: 2px; font-weight: bold; text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
-.demo-field input, .demo-field select { background: #13172b; color: var(--neon-cyan); border: 1px solid rgba(0, 243, 255, 0.4); padding: 4px 6px; border-radius: 4px; font-size: clamp(.65rem, 2vw, .8rem); outline: none; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
-.demo-field input:focus, .demo-field select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
+  /* Trafik Işığı / Komut Panosu */
+  #traffic-light{position:absolute;top:20px;background:#222;padding:15px 25px;border-radius:25px;border:4px solid #444;display:none;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 20px rgba(0,0,0,0.8);z-index:20}
+  .light{width:50px;height:50px;border-radius:50%;opacity:0.2;transition:opacity 0.2s, box-shadow 0.2s}
+  .light.red{background:#ff1744}.light.green{background:#00e676}
+  .light.active{opacity:1;box-shadow:0 0 25px currentColor}
+  #light-text{font-size:1.2rem;font-weight:900;color:#fff;margin-top:5px;text-shadow:1px 1px #000}
 
-.panel-row { display: flex; gap: 6px; justify-content: center; align-items: center; width: 100%; }
-#module-select, #mode-select { background: #13172b; color: #fff; border: 1px solid var(--neon-cyan); padding: 6px 10px; border-radius: 4px; font-size: clamp(.75rem, 2.5vw, .9rem); outline: none; font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; }
-#module-select { flex: 1; max-width: 360px; color: var(--neon-cyan); }
-#mode-select { flex: 0 0 auto; max-width: 180px; color: var(--neon-yellow); border-color: var(--neon-yellow); }
+  /* Kart/Yönerge */
+  #instruction-card{position:absolute;width:min(90%,420px);background:rgba(30,34,45,0.95);border:3px solid #ffcc00;padding:20px;border-radius:20px;text-align:center;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,0.8)}
+  #instruction-card h3{color:#ffcc00;margin-top:0;font-size:1.4rem}
+  #instruction-card p{font-size:.95rem;line-height:1.5;color:#ddd}
 
-.extra-options { display: none; gap: 10px; justify-content: center; align-items: center; margin-top: 5px; font-size: .75rem; color: var(--neon-cyan); font-family: 'Orbitron', monospace; }
-.extra-options select { background: #13172b; color: #fff; border: 1px solid var(--neon-cyan); padding: 2px 6px; border-radius: 4px; }
-.consent-row { margin-top: 5px; font-size: .65rem; color: #64748b; display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
-#sync-status { color: var(--neon-green); font-weight: bold; }
+  /* Kontrol Butonları */
+  #controls{padding:10px;background:#252836;display:flex;gap:10px;justify-content:center;border-top:2px solid #333}
+  button{flex:1;max-width:160px;min-height:50px;font-size:1rem;font-weight:900;border:none;border-radius:12px;cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,0.3);transition:transform 0.1s}
+  button:active{transform:translateY(3px);box-shadow:none}
+  .btn-start{background:#00c853}.btn-stop{background:#d50000}.btn-export{background:#0288d1}
 
-/* STATS BAR */
-#stats-bar { display: flex; justify-content: space-around; background: #080a14; padding: 8px 12px; font-size: clamp(.7rem, 2.2vw, .85rem); font-family: 'Orbitron', sans-serif; font-weight: bold; border-bottom: 1px solid #1a233a; flex-shrink: 0; }
-.stat-item { color: #8892b0; text-transform: uppercase; letter-spacing: 1px; }
-.stat-item span { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan); }
-#stat-errors { color: var(--neon-magenta) !important; text-shadow: 0 0 5px var(--neon-magenta); }
-
-/* OYUN ALANI */
-#game-area { flex: 1; position: relative; width: 100%; overflow: hidden; background: radial-gradient(circle at center, #101426 0%, #05060a 100%); display: flex; justify-content: center; align-items: center; padding: 10px; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
-
-@keyframes fbok { 0% { box-shadow: inset 0 0 30px var(--neon-green); } 100% { box-shadow: inset 0 0 0 transparent; } }
-@keyframes fbbad { 0% { box-shadow: inset 0 0 30px var(--neon-magenta); } 100% { box-shadow: inset 0 0 0 transparent; } }
-#game-area.fb-ok { animation: fbok .4s; }
-#game-area.fb-bad { animation: fbbad .4s; }
-
-/* GÖREV KARTI */
-#instruction-card { position: absolute; width: min(92%, 500px); max-height: 90%; overflow-y: auto; background: var(--panel-bg); backdrop-filter: blur(10px); border: 2px solid var(--neon-cyan); padding: 20px; border-radius: 8px; text-align: left; z-index: 1000; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); transition: opacity 0.3s; }
-#instruction-card.hidden { display: none; }
-#instruction-card h3 { margin-top: 0; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: clamp(1rem, 3.5vw, 1.3rem); text-align: center; text-transform: uppercase; letter-spacing: 1.5px; text-shadow: 0 0 10px var(--neon-cyan); border-bottom: 1px solid var(--border-glow); padding-bottom: 8px; }
-#instruction-card p { font-size: clamp(.8rem, 2.6vw, .95rem); line-height: 1.6; color: #d8dee9; margin-bottom: 10px; font-weight: 500; }
-.eval-info { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--neon-cyan); padding: 8px 10px; font-size: .78rem; color: #81a1c1; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
-.score-info { background: rgba(0, 255, 102, 0.05); border-left: 3px solid var(--neon-green); padding: 8px 10px; font-size: .78rem; color: #a3be8c; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
-
-/* OYUN ELEMANLARI */
-#target-circle { position: absolute; transform: translate(-50%, -50%); width: clamp(110px, 25vw, 150px); height: clamp(110px, 25vw, 150px); border-radius: 50%; background: #000; border: 3px solid #fff; display: none; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.3rem, 4vw, 2rem); font-weight: 900; text-align: center; padding: 8px; z-index: 200; box-shadow: 0 0 25px rgba(255, 255, 255, 0.3); cursor: pointer; }
-
-#dual-buttons { display: none; width: calc(100% - 20px); max-width: 420px; gap: 20px; justify-content: center; z-index: 100; position: absolute; bottom: 20px; }
-.choice-btn { flex: 1; padding: 18px 0; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; border-radius: 6px; border: 2px solid #fff; text-align: center; color: #fff; text-shadow: 0 0 5px #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; }
-.btn-left { background: linear-gradient(135deg, #ff0055, #990033); border-color: var(--neon-magenta); }
-.btn-right { background: linear-gradient(135deg, #00d2ff, #006699); border-color: var(--neon-cyan); }
-
-#spatial-grid { display: none; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; width: 100%; height: 100%; max-width: 480px; max-height: 480px; margin: auto; z-index: 100; }
-.spatial-btn { border-radius: 10px; opacity: .4; transition: opacity .15s, transform .1s; display: flex; justify-content: center; align-items: center; font-family: 'Orbitron', sans-serif; font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 900; color: #000; border: 2px solid #fff; width: 100%; height: 100%; cursor: pointer; }
-.spatial-btn:active, .spatial-btn.active { opacity: 1; box-shadow: 0 0 35px #fff; transform: scale(.96); }
-
-#memory-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(75vw, 300px); aspect-ratio: 1; margin: auto; z-index: 100; }
-.memory-block { background: #121829; border: 2px solid var(--neon-cyan); border-radius: 8px; cursor: pointer; }
-.memory-block.lit { background: var(--neon-cyan) !important; box-shadow: 0 0 30px var(--neon-cyan) !important; }
-
-#numpad-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(80vw, 280px); margin: auto; z-index: 100; }
-.num-btn { background: #121829; border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: bold; padding: 14px 0; border-radius: 6px; text-align: center; cursor: pointer; }
-.num-btn:active { background: var(--neon-cyan); color: #000; }
-
-#cv { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
-
-/* KONTROL BUTONLARI */
-#controls { padding: 10px; background: #0c0f1d; display: flex; gap: 8px; justify-content: center; flex-shrink: 0; border-top: 1px solid #1a233a; width: 100%; }
-button { flex: 1; max-width: 150px; min-height: 46px; padding: 8px 0; font-family: 'Orbitron', sans-serif; font-size: clamp(.65rem, 2.2vw, .85rem); font-weight: 700; border: 1px solid transparent; border-radius: 4px; cursor: pointer; color: #fff; text-transform: uppercase; letter-spacing: 1px; transition: all .2s; }
-.btn-start { background: linear-gradient(135deg, #00b33c, #006622); border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
-.btn-stop { background: linear-gradient(135deg, #b3003b, #660022); border-color: var(--neon-magenta); }
-.btn-export { background: linear-gradient(135deg, #0088cc, #004466); border-color: var(--neon-cyan); }
-.btn-report { background: linear-gradient(135deg, #8800cc, #440066); border-color: #d800ff; }
-.btn-mute { background: #1a233a; border-color: #3b4252; max-width: 90px; }
-button:disabled { background: #181c2b !important; border-color: #2e3440 !important; color: #4c566a !important; box-shadow: none !important; cursor: not-allowed; }
-
-/* RAPOR OVERLAY */
-#report-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 5000; background: #080a12; overflow-y: auto; padding: 20px; }
-#report-overlay.open { display: block; }
-#report-bar { display: flex; justify-content: space-between; align-items: center; background: #0c0f1d; border-bottom: 2px solid var(--neon-cyan); padding: 12px; margin-bottom: 20px; }
-#report-body { max-width: 800px; margin: 0 auto; color: #d8dee9; font-family: 'Rajdhani', sans-serif; }
+  /* Efektler */
+  @keyframes shake { 0%,100%{transform:translate(0,0)} 20%,60%{transform:translate(-8px,0)} 40%,80%{transform:translate(8px,0)} }
+  .shake-target{animation:shake 0.4s ease-in-out}
 </style>
 </head>
 <body>
 
-<div id="err-banner"></div>
-
 <header>
-  <div class="header-title-box">
-    <h1>NEURO-CORE // LAB</h1>
-    <span class="status-tag" id="status-tag">HAZIR</span>
-  </div>
-  <div class="demo-bar">
-    <div class="demo-field"><label>Siber ID</label><input type="text" id="athlete-id" value="AGENT-101" maxlength="32"></div>
-    <div class="demo-field"><label>Yaş</label><input type="number" id="athlete-age" value="22" min="5" max="99"></div>
-    <div class="demo-field"><label>Cinsiyet</label><select id="athlete-gender"><option value="Erkek">Erkek</option><option value="Kadin">Kadın</option></select></div>
-    <div class="demo-field"><label>Uzmanlık</label><input type="text" id="athlete-sport" value="Taktik" maxlength="32"></div>
-  </div>
-  <div class="panel-row">
-    <select id="module-select">
-      <option value="gonogo">1. Go/No-Go (Baskılama)</option>
-      <option value="stroop">2. Stroop (Renk-Kelime Çelişkisi)</option>
-      <option value="simon">3. Simon Effect (Mekânsal Çatışma)</option>
-      <option value="flanker">4. Flanker Testi (Çeldirici Dikkat)</option>
-      <option value="pvt">5. PVT (Basit Reaksiyon Hızı)</option>
-    </select>
-    <select id="mode-select">
-      <option value="quick">Hızlı Tarama (10 Deneme)</option>
-      <option value="rel">Tam Kalibrasyon (20 Deneme)</option>
-    </select>
+  <h1>🏎️ SPPLab Kids: Bilişsel Sürücü</h1>
+  <div class="kids-bar">
+    <div class="kids-field"><label>Pilot ID:</label><input type="text" id="athlete-id" value="KID-01" style="width:70px"></div>
+    <div class="kids-field"><label>Yaş:</label><input type="number" id="athlete-age" value="8" style="width:40px"></div>
+    <div class="kids-field"><label>Oyun:</label>
+      <select id="module-select">
+        <option value="gonogo_car">🏎️ Gaz/Fren Yarışı (Go/No-Go)</option>
+        <option value="choice_lane">↔️ Şerit Değiştirme (Çoklu Seçenek)</option>
+      </select>
+    </div>
   </div>
 </header>
 
 <div id="stats-bar">
-  <div class="stat-item">SEANS: <span id="stat-trials">0/10</span></div>
-  <div class="stat-item">SÜRE: <span id="stat-timer">0.00 s</span></div>
-  <div class="stat-item">NEURO-SKOR: <span id="stat-score">0</span></div>
-  <div class="stat-item">SAPMA: <span id="stat-errors">0</span></div>
+  <div class="stat-card">Tur: <span id="stat-trials">0/10</span></div>
+  <div class="stat-card">Süre: <span id="stat-timer">0.00s</span></div>
+  <div class="stat-card">Skor: <span id="stat-score">0</span> 🏆</div>
+  <div class="stat-card">Hata: <span id="stat-errors">0</span> 💥</div>
 </div>
 
 <div id="game-area">
+  <div class="road-background">
+    <div class="lane-markings"></div>
+  </div>
+
   <div id="instruction-card">
-    <h3 id="instr-title">GÖREV YÖNERGESİ</h3>
-    <p id="instr-text">Test seçin ve Başlat butonuna basın.</p>
-    <div id="instr-eval" class="eval-info">Bilişsel İnhibisyon ve Tepki Hızı Ölçümü</div>
+    <h3 id="instr-title">Yarışa Hazır Mısın?</h3>
+    <p id="instr-text">Işık **YEŞİL** yandığında veya **"GAZ!"** yazdığında hemen arabana dokun!<br><br>Işık **KIRMIZI** yandığında veya **"FREN!"** yazdığında **SAKIN DOKUNMA!**</p>
+    <button class="btn-start" onclick="startTest()">YARIŞI BAŞLAT 🚀</button>
   </div>
 
-  <canvas id="cv"></canvas>
-  <div id="target-circle"></div>
-  
-  <div id="dual-buttons">
-    <div class="choice-btn btn-left" id="btn-left-opt">SOL (←)</div>
-    <div class="choice-btn btn-right" id="btn-right-opt">SAĞ (→)</div>
+  <!-- Trafik Işığı -->
+  <div id="traffic-light">
+    <div class="light red" id="light-red"></div>
+    <div class="light green" id="light-green"></div>
+    <div id="light-text">BEKLE...</div>
   </div>
 
-  <div id="spatial-grid">
-    <div class="spatial-btn" data-key="red" style="background:#ff0055">KIRMIZI</div>
-    <div class="spatial-btn" data-key="blue" style="background:#00d2ff">MAVİ</div>
-    <div class="spatial-btn" data-key="green" style="background:#00ff66">YEŞİL</div>
-    <div class="spatial-btn" data-key="yellow" style="background:#ffcc00">SARIL</div>
-  </div>
-
-  <div id="memory-grid"></div>
-  <div id="numpad-grid"></div>
+  <!-- Oyuncu Arabası -->
+  <div id="player-car" style="display:none;">🏎️</div>
 </div>
 
 <div id="controls">
-  <button id="start-btn" class="btn-start">BAŞLAT</button>
-  <button id="stop-btn" class="btn-stop" disabled>DURDUR</button>
-  <button id="export-btn" class="btn-export" disabled>CSV AKTAR</button>
-  <button id="report-btn" class="btn-report">ANALİZ</button>
-  <button id="mute-btn" class="btn-mute">SES: AÇIK</button>
-</div>
-
-<div id="report-overlay">
-  <div id="report-bar">
-    <h2>NÖRO-BİLİŞSEL PERFORMANS ANALİZİ</h2>
-    <button id="rep-close">KAPAT</button>
-  </div>
-  <div id="report-body"></div>
+  <button id="start-btn" class="btn-start" onclick="startTest()">BAŞLAT</button>
+  <button id="stop-btn" class="btn-stop" onclick="stopTest()" disabled>DURDUR</button>
+  <button id="export-btn" class="btn-export" onclick="exportCSV()" disabled>VERİ İNDİR (CSV)</button>
 </div>
 
 <script>
-// --- MOTOR & BİLİŞSEL SİMÜLASYON YÖNETİCİSİ ---
-const GameState = {
+const $=id=>document.getElementById(id);
+const rnd=n=>Math.floor(Math.random()*n);
+
+const S = {
   active: false,
-  module: 'gonogo',
-  maxTrials: 10,
-  currentTrial: 0,
+  waiting: false,
+  idx: 0,
+  total: 10,
   score: 0,
   errors: 0,
-  startTime: 0,
-  trialStartTime: 0,
-  results: [],
-  soundEnabled: true,
-  currentTarget: null
+  t0: 0,
+  clockStart: 0,
+  rows: [],
+  sessionId: '',
+  timerInt: null
 };
 
-// UI Elemanları
-const el = {
-  startBtn: document.getElementById('start-btn'),
-  stopBtn: document.getElementById('stop-btn'),
-  exportBtn: document.getElementById('export-btn'),
-  reportBtn: document.getElementById('report-btn'),
-  muteBtn: document.getElementById('mute-btn'),
-  instructionCard: document.getElementById('instruction-card'),
-  instrTitle: document.getElementById('instr-title'),
-  instrText: document.getElementById('instr-text'),
-  targetCircle: document.getElementById('target-circle'),
-  dualButtons: document.getElementById('dual-buttons'),
-  btnLeft: document.getElementById('btn-left-opt'),
-  btnRight: document.getElementById('btn-right-opt'),
-  spatialGrid: document.getElementById('spatial-grid'),
-  moduleSelect: document.getElementById('module-select'),
-  modeSelect: document.getElementById('mode-select'),
-  statTrials: document.getElementById('stat-trials'),
-  statTimer: document.getElementById('stat-timer'),
-  statScore: document.getElementById('stat-score'),
-  statErrors: document.getElementById('stat-errors'),
-  statusTag: document.getElementById('status-tag'),
-  gameArea: document.getElementById('game-area'),
-  reportOverlay: document.getElementById('report-overlay'),
-  reportBody: document.getElementById('report-body'),
-  repClose: document.getElementById('rep-close')
-};
-
-// Yönergeler
-const Instructions = {
-  gonogo: {
-    title: "GO / NO-GO TESTİ",
-    text: "Ekranda YEŞİL daire çıktığında TIKLAYIN veya BOŞLUK tuşuna basın (GO). KIRMIZI daire çıktığında HİÇBİR ŞEY YAPMAYIN (NO-GO)."
-  },
-  stroop: {
-    title: "STROOP TESTİ",
-    text: "Ekranda yazan kelimenin ANLAMINA DEĞİL, YAZILDIĞI RENGE göre aşağıdaki butonlara basın."
-  },
-  simon: {
-    title: "SIMON EFFECT TESTİ",
-    text: "Ekranda çıkan Ok işareti SOLU gösteriyorsa SOL butonuna, SAĞI gösteriyorsa SAĞ butonuna basın. Pozisyonuna aldanmayın!"
-  },
-  flanker: {
-    title: "FLANKER TESTİ",
-    text: "Ortadaki ok işaretinin yönüne odaklanın. Yandaki okları göz önünde bulundurmayın. Ortadaki ok SOL ise SOL, SAĞ ise SAĞ butonuna basın."
-  },
-  pvt: {
-    title: "BASİT REAKSİYON (PVT)",
-    text: "Ekranda kırmızı daire belirdiği anda olabildiğince hızlı bir şekilde ekrana tıklayın veya BOŞLUK tuşuna basın."
+// Ses Efektleri (Web Audio API)
+let audioCtx = null;
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playSound(type){
+  if(!audioCtx) return;
+  const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
+  osc.connect(g); g.connect(audioCtx.destination);
+  
+  if(type==='go'){
+    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+    g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+  } else if(type==='stop') {
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.4, audioCtx.currentTime);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+  } else if(type==='win') {
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
   }
-};
-
-// Ses Sentezleyici (Web Audio API)
-const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playBeep(freq, type = 'sine', duration = 0.1) {
-  if (!GameState.soundEnabled) return;
-  try {
-    const osc = AudioCtx.createOscillator();
-    const gain = AudioCtx.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
-    osc.connect(gain);
-    gain.connect(AudioCtx.destination);
-    osc.start();
-    gain.gain.exponentialRampToValueAtTime(0.00001, AudioCtx.currentTime + duration);
-    osc.stop(AudioCtx.currentTime + duration);
-  } catch(e){}
 }
 
-// Modül Değişimi
-el.moduleSelect.addEventListener('change', (e) => {
-  GameState.module = e.target.value;
-  const info = Instructions[GameState.module];
-  if (info) {
-    el.instrTitle.textContent = info.title;
-    el.instrText.textContent = info.text;
-  }
-});
+function startClock(){
+  S.clockStart = performance.now();
+  S.timerInt = setInterval(()=>{
+    $('stat-timer').textContent = ((performance.now() - S.clockStart)/1000).toFixed(2) + 's';
+  }, 50);
+}
+function stopClock(){ clearInterval(S.timerInt); }
 
-el.modeSelect.addEventListener('change', (e) => {
-  GameState.maxTrials = e.target.value === 'quick' ? 10 : 20;
-  el.statTrials.textContent = `0/${GameState.maxTrials}`;
-});
-
-// Başlatma ve Durdurma
-el.startBtn.addEventListener('click', startGame);
-el.stopBtn.addEventListener('click', stopGame);
-el.muteBtn.addEventListener('click', () => {
-  GameState.soundEnabled = !GameState.soundEnabled;
-  el.muteBtn.textContent = `SES: ${GameState.soundEnabled ? 'AÇIK' : 'KAPALI'}`;
-});
-
-function startGame() {
-  if (AudioCtx.state === 'suspended') AudioCtx.resume();
-  GameState.active = true;
-  GameState.currentTrial = 0;
-  GameState.score = 0;
-  GameState.errors = 0;
-  GameState.results = [];
+function startTest(){
+  initAudio();
+  S.active = true;
+  S.idx = 0;
+  S.score = 0;
+  S.errors = 0;
+  S.rows = [];
+  S.sessionId = Date.now().toString(36);
   
-  el.startBtn.disabled = true;
-  el.stopBtn.disabled = false;
-  el.exportBtn.disabled = true;
-  el.moduleSelect.disabled = true;
-  el.modeSelect.disabled = true;
+  $('instruction-card').style.display = 'none';$('player-car').style.display = 'block';
+  $('traffic-light').style.display = 'flex';$('start-btn').disabled = true;
+  $('stop-btn').disabled = false;
+  $('export-btn').disabled = true;
   
-  el.instructionCard.classList.add('hidden');
-  el.statusTag.textContent = "SİMÜLASYON ÇALIŞIYOR";
-  el.statusTag.style.borderColor = "var(--neon-green)";
-  el.statusTag.style.color = "var(--neon-green)";
-
   updateStats();
+  startClock();
   nextTrial();
 }
 
-function stopGame() {
-  GameState.active = false;
-  clearTimeout(GameState.timeoutId);
-  
-  el.startBtn.disabled = false;
-  el.stopBtn.disabled = true;
-  el.moduleSelect.disabled = false;
-  el.modeSelect.disabled = false;
-  
-  el.instructionCard.classList.remove('hidden');
-  el.targetCircle.style.display = 'none';
-  el.dualButtons.style.display = 'none';
-  el.spatialGrid.style.display = 'none';
-  
-  el.statusTag.textContent = "DURDURULDU";
-  el.statusTag.style.borderColor = "var(--neon-magenta)";
-  el.statusTag.style.color = "var(--neon-magenta)";
-  
-  if (GameState.results.length > 0) el.exportBtn.disabled = false;
+function updateStats(){
+  $('stat-trials').textContent = `${S.idx}/${S.total}`;
+  $('stat-score').textContent = S.score;
+  $('stat-errors').textContent = S.errors;
 }
 
-function nextTrial() {
-  if (GameState.currentTrial >= GameState.maxTrials) {
-    endGame();
-    return;
+function nextTrial(){
+  if(S.idx >= S.total){ finishTest(); return; }
+  S.idx++;
+  updateStats();
+  S.waiting = false;
+  
+  // Işıkları Sıfırla
+  $('light-red').classList.remove('active');
+  $('light-green').classList.remove('active');$('light-text').textContent = "HAZIRLAN...";
+  $('light-text').style.color = "#fff";
+
+  // Rastgele Gecikme (1.5s - 3.5s arası)
+  const waitTime = 1500 + rnd(2000);
+  setTimeout(()=>{
+    if(!S.active) return;
+    presentStimulus();
+  }, waitTime);
+}
+
+function presentStimulus(){
+  const isGo = Math.random() < 0.7; // %70 Gaz, %30 Fren
+  
+  if(isGo){
+    $('light-green').classList.add('active');$('light-text').textContent = "GAZ BASS!! 🚀";
+    $('light-text').style.color = "#00e676";
+    playSound('go');
+  } else {
+    $('light-red').classList.add('active');$('light-text').textContent = "FREN YAP!! 🛑";
+    $('light-text').style.color = "#ff1744";
+    playSound('stop');
   }
-  
-  GameState.currentTrial++;
-  el.statTrials.textContent = `${GameState.currentTrial}/${GameState.maxTrials}`;
-  
-  // Arayüzleri Sıfırla
-  el.targetCircle.style.display = 'none';
-  el.dualButtons.style.display = 'none';
-  el.spatialGrid.style.display = 'none';
-  
-  // Rastgele Bekleme Süresi (1 - 3 saniye)
-  const delay = Math.random() * 2000 + 1000;
-  GameState.timeoutId = setTimeout(() => {
-    if (!GameState.active) return;
-    runModuleLogic();
-  }, delay);
-}
 
-function runModuleLogic() {
-  GameState.trialStartTime = performance.now();
-  
-  if (GameState.module === 'gonogo') {
-    const isGo = Math.random() > 0.3; // %70 GO
-    GameState.currentTarget = isGo ? 'GO' : 'NOGO';
-    el.targetCircle.style.background = isGo ? '#00ff66' : '#ff0055';
-    el.targetCircle.style.left = '50%';
-    el.targetCircle.style.top = '50%';
-    el.targetCircle.style.display = 'flex';
-    el.targetCircle.textContent = isGo ? 'GO' : 'DUR';
-    
-    // NOGO İçin Otomatik Geçiş
-    if (!isGo) {
-      GameState.timeoutId = setTimeout(() => {
-        if (GameState.active && GameState.currentTarget === 'NOGO') {
-          handleResponse(true); // Doğru Baskılama
-        }
-      }, 1500);
+  S.t0 = performance.now();
+  S.waiting = true;
+
+  // Zaman aşımı mantığı
+  const timeoutMs = 1500;
+  const trialTimer = setTimeout(()=>{
+    if(S.waiting){
+      // Oyuncu hiçbir şeye dokunmadı
+      if(isGo){
+        // Omisyon Hatası (Gaz vermesi gerekiyordu ama vermedi)
+        handleResponse(false, 'MISS', 1500, 'GO');
+      } else {
+        // Doğru İnhibisyon (Fren yapması gerekiyordu ve yapmadı)
+        handleResponse(true, 'NONE', 1500, 'NOGO');
+      }
     }
-  } else if (GameState.module === 'stroop') {
-    const colors = [
-      { name: 'KIRMIZI', color: '#ff0055', key: 'red' },
-      { name: 'MAVİ', color: '#00d2ff', key: 'blue' },
-      { name: 'YEŞİL', color: '#00ff66', key: 'green' },
-      { name: 'SARI', color: '#ffcc00', key: 'yellow' }
-    ];
-    const textItem = colors[Math.floor(Math.random() * colors.length)];
-    const colorItem = colors[Math.floor(Math.random() * colors.length)];
+  }, timeoutMs);
+
+  // Arabaya Dokunma Olayı (Pointer Event)
+  $('player-car').onclick = (e) => {
+    if(!S.waiting) return;
+    clearTimeout(trialTimer);
+    const rt = Math.round(performance.now() - S.t0);
     
-    GameState.currentTarget = colorItem.key; // Hedef: Yazının Rengi
-    el.targetCircle.style.background = '#000';
-    el.targetCircle.style.color = colorItem.color;
-    el.targetCircle.style.left = '50%';
-    el.targetCircle.style.top = '50%';
-    el.targetCircle.style.display = 'flex';
-    el.targetCircle.classList.add('wide');
-    el.targetCircle.textContent = textItem.name;
-    
-    el.spatialGrid.style.display = 'grid';
-  } else if (GameState.module === 'pvt') {
-    GameState.currentTarget = 'GO';
-    el.targetCircle.style.background = '#ff0055';
-    el.targetCircle.style.left = '50%';
-    el.targetCircle.style.top = '50%';
-    el.targetCircle.style.display = 'flex';
-    el.targetCircle.textContent = 'BAS!';
-  } else if (GameState.module === 'simon' || GameState.module === 'flanker') {
-    const isLeft = Math.random() > 0.5;
-    GameState.currentTarget = isLeft ? 'LEFT' : 'RIGHT';
-    
-    el.targetCircle.style.background = '#000';
-    el.targetCircle.style.color = '#00f3ff';
-    el.targetCircle.style.display = 'flex';
-    
-    if (GameState.module === 'simon') {
-      el.targetCircle.style.left = Math.random() > 0.5 ? '30%' : '70%';
-      el.targetCircle.style.top = '50%';
-      el.targetCircle.textContent = isLeft ? '←' : '→';
+    if(isGo){
+      // Doğru Reaksiyon
+      handleResponse(true, 'TAP', rt, 'GO');
     } else {
-      el.targetCircle.style.left = '50%';
-      el.targetCircle.style.top = '50%';
-      const flankerMatch = Math.random() > 0.5;
-      el.targetCircle.textContent = isLeft ? (flankerMatch ? '<<<<<' : '>>><<') : (flankerMatch ? '>>>>>' : '<<>>');
+      // Komisyon Hatası (Frende gaza bastı)
+      handleResponse(false, 'TAP', rt, 'NOGO');
     }
-    
-    el.dualButtons.style.display = 'flex';
-  }
+  };
 }
 
-// Yanıt İşleme
-function handleResponse(userInput) {
-  if (!GameState.active || !GameState.trialStartTime) return;
+function handleResponse(correct, responseType, rt, condition){
+  S.waiting = false;
   
-  const rt = performance.now() - GameState.trialStartTime;
-  let isCorrect = false;
-
-  if (GameState.module === 'gonogo') {
-    if (GameState.currentTarget === 'GO' && userInput === true) isCorrect = true;
-    else if (GameState.currentTarget === 'NOGO' && userInput === true) isCorrect = true; // Otomatik NOGO başarısı
-    else isCorrect = false;
-  } else if (GameState.module === 'pvt') {
-    if (userInput === true) isCorrect = true;
+  if(correct){
+    S.score += (condition === 'GO') ? Math.max(100, 1000 - rt) : 500; // Hızlı basarsa yüksek puan
+    $('player-car').classList.add('bounce');
+    setTimeout(()=>$('player-car').classList.remove('bounce'), 300);
   } else {
-    isCorrect = (userInput === GameState.currentTarget);
+    S.errors++;
+    S.score = Math.max(0, S.score - 200);
+    $('game-area').classList.add('shake-target');
+    setTimeout(()=>$('game-area').classList.remove('shake-target'), 400);
   }
 
-  // Skor & İstatistikler
-  if (isCorrect) {
-    playBeep(800, 'sine', 0.1);
-    GameState.score += Math.max(10, Math.round(1000 - rt));
-    flashFeedback('ok');
-  } else {
-    playBeep(200, 'square', 0.2);
-    GameState.errors++;
-    flashFeedback('bad');
-  }
+  // Veri Kaydı (Veri Tabanı / CSV formatı ile tam uyumlu)
+  S.rows.push({
+    sessionId: S.sessionId,
+    athleteId: $('athlete-id').value,
+    age: $('athlete-age').value,
+    trial: S.idx,
+    condition: condition,
+    response: responseType,
+    rt: rt,
+    correct: correct ? 1 : 0,
+    score: S.score,
+    timestamp: new Date().toISOString()
+  });
 
-  GameState.results.push({ trial: GameState.currentTrial, rt: Math.round(rt), correct: isCorrect });
   updateStats();
-  
-  GameState.trialStartTime = 0;
-  GameState.currentTarget = null;
-  
-  nextTrial();
+  setTimeout(nextTrial, 1000);
 }
 
-// Geribildirim Efekti
-function flashFeedback(type) {
-  el.gameArea.classList.add(`fb-${type}`);
-  setTimeout(() => el.gameArea.classList.remove(`fb-${type}`), 400);
+function stopTest(){
+  S.active = false;
+  stopClock();
+  $('instruction-card').style.display = 'block';$('instr-title').textContent = "Yarış Durduruldu!";
+  $('instr-text').textContent = "İstediğin zaman tekrar başlayabilirsin.";
+  $('player-car').style.display = 'none';
+  $('traffic-light').style.display = 'none';$('start-btn').disabled = false;
+  $('stop-btn').disabled = true;
 }
 
-function updateStats() {
-  el.statScore.textContent = GameState.score;
-  el.statErrors.textContent = GameState.errors;
+function finishTest(){
+  S.active = false;
+  stopClock();
+  playSound('win');
   
-  if (GameState.results.length > 0) {
-    const avgRt = GameState.results.reduce((acc, r) => acc + r.rt, 0) / GameState.results.length;
-    el.statTimer.textContent = `${(avgRt / 1000).toFixed(2)} s`;
-  } else {
-    el.statTimer.textContent = "0.00 s";
-  }
+  let unvan = "Çaylak Sürücü 🐣";
+  if(S.score > 5000) unvan = "Efsanevi Yarışçı 🏆⚡";
+  else if(S.score > 3000) unvan = "Hız Şampiyonu 🏎️💨";
+
+  $('instruction-card').style.display = 'block';$('instr-title').textContent = "YARIŞ BİTTİ!";
+  $('instr-text').innerHTML = `
+    <b>Kazanılan Unvan:</b> <span style="color:#ffcc00;font-size:1.2rem">${unvan}</span><br><br>
+    <b>Toplam Skor:</b> ${S.score} Puan<br>
+    <b>Toplam Hata:</b> ${S.errors}<br><br>
+    Tebrikler! Bilişsel reflekslerin harikaydı!
+  `;
+  
+  $('player-car').style.display = 'none';
+  $('traffic-light').style.display = 'none';$('start-btn').disabled = false;
+  $('stop-btn').disabled = true;
+  $('export-btn').disabled = false;
 }
 
-function endGame() {
-  stopGame();
-  playBeep(1200, 'sine', 0.3);
-  el.statusTag.textContent = "TAMAMLAMDI";
-  el.statusTag.style.borderColor = "var(--neon-cyan)";
-  el.statusTag.style.color = "var(--neon-cyan)";
-  alert(`Test Tamamlandı!\nToplam Skor: ${GameState.score}\nHatalar: ${GameState.errors}`);
+function exportCSV(){
+  if(!S.rows.length) return;
+  const keys = Object.keys(S.rows[0]);
+  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+    + keys.join(",") + "\n"
+    + S.rows.map(e => keys.map(k => e[k]).join(",")).join("\n");
+    
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `SPPLab_Kids_${$('athlete-id').value}_${Date.now()}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
-
-// --- ETKİNLİK DİNLENİCİLERİ (GİRDİ KONTROLLERİ) ---
-
-// 1. Ekran / Hedef Daire Tıklaması
-el.targetCircle.addEventListener('pointerdown', () => {
-  if (GameState.module === 'gonogo' || GameState.module === 'pvt') {
-    handleResponse(true);
-  }
-});
-
-// 2. Çift Butonlar (SOL / SAĞ)
-el.btnLeft.addEventListener('pointerdown', () => handleResponse('LEFT'));
-el.btnRight.addEventListener('pointerdown', () => handleResponse('RIGHT'));
-
-// 3. Renk Grid Butonları (Stroop)
-document.querySelectorAll('.spatial-btn').forEach(btn => {
-  btn.addEventListener('pointerdown', (e) => {
-    const key = e.target.getAttribute('data-key');
-    handleResponse(key);
-  });
-});
-
-// 4. Klavye Tuş Kontrolleri
-window.addEventListener('keydown', (e) => {
-  if (!GameState.active) return;
-  
-  if (e.code === 'Space') {
-    e.preventDefault();
-    if (GameState.module === 'gonogo' || GameState.module === 'pvt') {
-      handleResponse(true);
-    }
-  } else if (e.code === 'ArrowLeft') {
-    if (GameState.module === 'simon' || GameState.module === 'flanker') handleResponse('LEFT');
-  } else if (e.code === 'ArrowRight') {
-    if (GameState.module === 'simon' || GameState.module === 'flanker') handleResponse('RIGHT');
-  }
-});
-
-// Rapor Paneli
-el.reportBtn.addEventListener('click', () => {
-  let html = `<h3>GÜNCEL PERFORMANS METRİKLERİ</h3>`;
-  html += `<p><b>Toplam Test Sayısı:</b> ${GameState.results.length}</p>`;
-  html += `<p><b>Toplam Skor:</b> ${GameState.score}</p>`;
-  html += `<p><b>Hata Sayısı:</b> ${GameState.errors}</p>`;
-  html += `<hr style="border-color:var(--neon-cyan)"><h4>Detaylı Reaksiyon Süreleri (ms):</h4><ul>`;
-  
-  GameState.results.forEach(r => {
-    html += `<li>Deneme ${r.trial}: ${r.rt} ms - ${r.correct ? '<span style="color:var(--neon-green)">Doğru</span>' : '<span style="color:var(--neon-magenta)">Hatalı</span>'}</li>`;
-  });
-  html += `</ul>`;
-  
-  el.reportBody.innerHTML = html;
-  el.reportOverlay.classList.add('open');
-});
-
-el.repClose.addEventListener('click', () => {
-  el.reportOverlay.classList.remove('open');
-});
 </script>
 </body>
 </html>
