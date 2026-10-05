@@ -3,466 +3,531 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SPPLab Kids - Bilişsel Akademi</title>
+<title>SPPLab Kids - Bilişsel Macera Parkı</title>
 <style>
-*{box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-html,body{width:100%;height:100%;margin:0;padding:0;background:#12131C;color:#fff;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;display:flex;flex-direction:column;overflow:hidden}
+  *{box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+  html,body{width:100%;height:100%;margin:0;padding:0;background:#0d0f18;color:#fff;font-family:'Segoe UI', Roboto, sans-serif;display:flex;flex-direction:column;overflow:hidden}
 
-/* --- KIDS HEADER --- */
-header{background:#1E202F;padding:10px 14px;border-bottom:3px solid #FFD700;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.player-profile{display:flex;align-items:center;gap:10px}
-.avatar{width:42px;height:42px;background:#FFD700;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:22px;border:2px solid #fff}
-.level-info{display:flex;flex-direction:column}
-.level-title{font-size:0.7rem;color:#AAA;font-weight:bold}
-.level-name{font-size:0.9rem;font-weight:900;color:#FFD700}
+  /* --- HEADER & XP BAR --- */
+  header{background:#16192b;padding:10px 16px;border-bottom:3px solid #ffaa00;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+  .profile{display:flex;align-items:center;gap:12px}
+  .avatar{width:44px;height:44px;background:linear-gradient(135deg, #ffaa00, #ff5500);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;box-shadow:0 0 10px rgba(255,170,0,0.5)}
+  .lvl-title{font-size:0.7rem;color:#8892b0;font-weight:bold;text-transform:uppercase}
+  .lvl-name{font-size:0.95rem;font-weight:900;color:#ffaa00}
 
-.xp-container{width:130px;background:#2A2D40;height:16px;border-radius:8px;overflow:hidden;border:1.5px solid #FFD700;position:relative}
-.xp-bar{width:0%;height:100%;background:linear-gradient(90deg, #FFD700, #FF5722);transition:width 0.4s ease}
-.xp-text{position:absolute;width:100%;text-align:center;font-size:9px;line-height:16px;font-weight:bold;color:#FFF;text-shadow:1px 1px #000}
+  .xp-box{width:140px;background:#0d0f18;height:18px;border-radius:10px;border:2px solid #ffaa00;position:relative;overflow:hidden}
+  .xp-fill{width:0%;height:100%;background:linear-gradient(90deg, #ffaa00, #00e676);transition:width 0.3s}
+  .xp-text{position:absolute;width:100%;text-align:center;font-size:10px;line-height:16px;font-weight:bold;color:#fff;text-shadow:1px 1px 2px #000}
 
-/* --- STATS BAR --- */
-#stats-bar{display:flex;justify-content:space-around;background:#181A26;padding:8px;font-size:0.8rem;font-weight:bold;border-bottom:1px solid #333;flex-shrink:0}
-.stat-item span{color:#00E676;font-size:1em}
+  /* --- STATS BAR --- */
+  #stats-bar{display:flex;justify-content:space-around;background:#101322;padding:8px;font-size:0.85rem;font-weight:bold;border-bottom:1px solid #232946;flex-shrink:0}
+  .stat-val{color:#00e676;font-size:1.1em}
 
-/* --- GAME AREA & MENU --- */
-#main-container{flex:1;position:relative;width:100%;overflow:hidden;display:flex;justify-content:center;align-items:center}
+  /* --- MAIN CONTENT AREA --- */
+  #app-body{flex:1;position:relative;width:100%;overflow:hidden;display:flex;justify-content:center;align-items:center}
 
-/* Ana Oyun Seçim Menüsü */
-#menu-view{width:100%;height:100%;padding:15px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;max-width:800px;margin:0 auto}
-.game-card{background:#1E202F;border:2px solid #3B3E5B;border-radius:16px;padding:12px;text-align:center;cursor:pointer;transition:transform 0.1s, border-color 0.2s;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.game-card:active{transform:scale(0.96)}
-.game-card:hover{border-color:#FFD700}
-.game-card .icon{font-size:36px;margin-bottom:6px}
-.game-card .title{font-size:0.85rem;font-weight:bold;color:#FFF}
-.game-card .category{font-size:0.65rem;color:#00E5FF;margin-top:4px}
+  /* --- MENU VIEW --- */
+  #menu-view{width:100%;height:100%;padding:20px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:16px;max-width:900px;margin:0 auto}
+  .game-card{background:linear-gradient(145deg, #1f243d, #16192b);border:2px solid #2d3559;border-radius:20px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+  .game-card:active{transform:scale(0.95)}
+  .game-card:hover{border-color:#ffaa00;box-shadow:0 0 15px rgba(255,170,0,0.3)}
+  .game-card .icon{font-size:48px;margin-bottom:10px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3))}
+  .game-card .title{font-size:1rem;font-weight:900;color:#fff}
+  .game-card .tag{font-size:0.7rem;color:#00e5ff;margin-top:6px;font-weight:bold;background:rgba(0,229,255,0.1);padding:3px 8px;border-radius:10px}
 
-/* Oyun Sahnesi (Game Arena) */
-#game-view{display:none;width:100%;height:100%;position:relative;flex-direction:column;justify-content:center;align-items:center;padding:10px}
+  /* --- GAME STAGE --- */
+  #game-stage{display:none;width:100%;height:100%;position:relative;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;background:#05070a}
 
-/* Yönerge & Başlatma Kartı */
-#instruction-card{position:absolute;width:min(90%,440px);background:rgba(25,27,38,0.98);border:3px solid #FFD700;padding:20px;border-radius:20px;text-align:center;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,0.8)}
-#instruction-card h3{color:#FFD700;margin-top:0;font-size:1.3rem}
-#instruction-card p{font-size:0.88rem;line-height:1.5;color:#DDD;margin-bottom:15px}
+  /* Instructions Modal */
+  #card-overlay{position:absolute;width:min(90%,420px);background:rgba(22,25,43,0.95);border:3px solid #ffaa00;padding:24px;border-radius:24px;text-align:center;z-index:100;box-shadow:0 10px 40px rgba(0,0,0,0.8);backdrop-filter:blur(5px)}
+  #card-overlay h2{color:#ffaa00;margin-top:0;font-size:1.5rem;text-shadow:0 2px 4px rgba(0,0,0,0.5)}
+  #card-overlay p{font-size:0.95rem;line-height:1.6;color:#dcdfe6;margin-bottom:20px}
 
-/* Etkileşim Elemanları */
-#target-circle{position:absolute;transform:translate(-50%,-50%);width:clamp(110px,28vw,150px);height:clamp(110px,28vw,150px);border-radius:50%;background:#000;border:4px solid #fff;display:none;justify-content:center;align-items:center;font-size:clamp(1.2rem,4vw,1.8rem);font-weight:900;text-align:center;padding:8px;z-index:200;box-shadow:0 0 20px rgba(0,0,0,0.5)}
-#target-circle.wide{width:auto;height:auto;min-width:160px;border-radius:20px;padding:16px 24px}
+  /* --- OYUN GÖRSEL BİLEŞENLERİ --- */
+  
+  /* Oyun 1: Siber Hırsız (Go/No-Go) */
+  #cyber-door{width:220px;height:280px;background:#1a2035;border:4px solid #00e5ff;border-radius:20px;display:none;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;box-shadow:0 0 30px rgba(0,229,255,0.2);position:relative;overflow:hidden}
+  #cyber-character{font-size:90px;transition:transform 0.1s}
+  #cyber-label{font-size:1.2rem;font-weight:900;margin-top:10px;letter-spacing:1px}
 
-#dual-buttons{display:none;width:calc(100% - 20px);max-width:400px;gap:15px;justify-content:center;z-index:100;position:absolute;bottom:20px}
-.choice-btn{flex:1;padding:18px 0;font-size:1.1rem;font-weight:900;border-radius:14px;border:3px solid #fff;text-align:center;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.3)}
-.choice-btn:active{transform:translateY(3px);box-shadow:none}
-.btn-left{background:#FF1744}.btn-right{background:#29B6F6}
+  /* Oyun 2: İksir Lab (Stroop) */
+  #potion-cauldron{width:160px;height:160px;border-radius:50%;background:#222;border:6px solid #444;display:none;justify-content:center;align-items:center;position:relative;margin-bottom:30px;box-shadow:0 0 40px rgba(0,0,0,0.8)}
+  #cauldron-liquid{width:120px;height:120px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-weight:900;font-size:1.4rem;color:#000;text-shadow:0 0 5px #fff;transition:background-color 0.2s}
+  #potion-shelf{display:none;gap:15px;z-index:50}
+  .potion-btn{width:70px;height:90px;background:#2d3559;border:3px solid #fff;border-radius:15px 15px 30px 30px;display:flex;justify-content:center;align-items:center;font-size:28px;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.4)}
+  .potion-btn:active{transform:translateY(4px);box-shadow:none}
 
-#spatial-grid{display:none;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;width:100%;height:100%;max-width:400px;max-height:400px;margin:auto;z-index:100}
-.spatial-btn{border-radius:16px;opacity:0.3;transition:opacity 0.1s;display:flex;justify-content:center;align-items:center;font-size:1.8rem;font-weight:900;color:#000;border:3px solid #fff;width:100%;height:100%;cursor:pointer}
-.spatial-btn.active{opacity:1;box-shadow:0 0 30px #fff;transform:scale(0.96)}
-#spatial-grid.all-on .spatial-btn{opacity:1}
+  /* Oyun 3: Galaksi Kaçış (Simon) */
+  #space-ship{font-size:80px;position:absolute;bottom:40px;display:none;transition:left 0.2s ease}
+  #space-controls{display:none;gap:20px;position:absolute;bottom:20px;width:90%;max-width:400px;z-index:50}
+  .space-btn{flex:1;padding:18px 0;font-size:1.1rem;font-weight:900;border-radius:16px;border:3px solid #fff;color:#fff;cursor:pointer;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,0.4)}
+  .space-btn:active{transform:translateY(4px);box-shadow:none}
 
-/* Feedback Anmasyonu */
-@keyframes fbok{0%{box-shadow:inset 0 0 0 8px #00E676}100%{box-shadow:inset 0 0 0 0 transparent}}
-@keyframes fbbad{0%{box-shadow:inset 0 0 0 8px #FF1744}100%{box-shadow:inset 0 0 0 0 transparent}}
-#game-view.fb-ok{animation:fbok .4s}
-#game-view.fb-bad{animation:fbbad .4s}
+  /* Oyun 4: Sualtı İnci (PVT) */
+  #underwater-clam{font-size:110px;display:none;cursor:pointer;transition:transform 0.1s;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.6))}
+  #clam-hint{position:absolute;top:100px;font-size:1.3rem;font-weight:900;color:#00e5ff;display:none;text-shadow:0 0 10px #00e5ff}
 
-/* --- FOOTER KONTROLLERİ --- */
-footer{padding:8px 10px;background:#1E202F;display:flex;gap:8px;justify-content:center;border-top:1px solid #333;flex-shrink:0}
-.btn{flex:1;max-width:140px;min-height:44px;padding:8px 0;font-size:0.8rem;font-weight:900;border:none;border-radius:10px;cursor:pointer;color:#fff;box-shadow:0 3px 0 rgba(0,0,0,0.2)}
-.btn:active{transform:translateY(2px);box-shadow:none}
-.btn-start{background:#00C853}.btn-stop{background:#D50000}.btn-menu{background:#0288D1}.btn-gold{background:#FFD700;color:#000}
-button:disabled{background:#333!important;color:#666!important;box-shadow:none;cursor:not-allowed}
+  /* Global Feedback Anmasyonları */
+  @keyframes flash-green { 0%{box-shadow:inset 0 0 0 10px #00e676} 100%{box-shadow:inset 0 0 0 0 transparent} }
+  @keyframes flash-red { 0%{box-shadow:inset 0 0 0 10px #ff1744} 100%{box-shadow:inset 0 0 0 0 transparent} }
+  .fb-good { animation: flash-green 0.4s ease-out; }
+  .fb-bad { animation: flash-red 0.4s ease-out; }
 
-/* Modal */
-#badge-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:5000;justify-content:center;align-items:center}
-.modal-box{background:#1E202F;border:3px solid #FFD700;border-radius:20px;padding:20px;width:90%;max-width:380px;text-align:center}
-.badge-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin:15px 0}
-.badge-item{background:#2A2D40;padding:10px;border-radius:12px;opacity:0.25;filter:grayscale(1)}
-.badge-item.unlocked{opacity:1;filter:none;border:1px solid #FFD700}
-.badge-item .b-icon{font-size:28px}
-.badge-item .b-name{font-size:0.65rem;margin-top:4px;color:#FFF;font-weight:bold}
+  /* --- FOOTER CONTROLS --- */
+  footer{padding:10px;background:#16192b;display:flex;gap:10px;justify-content:center;border-top:1px solid #232946;flex-shrink:0}
+  .btn{flex:1;max-width:140px;min-height:46px;padding:10px 0;font-size:0.85rem;font-weight:900;border:none;border-radius:12px;cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,0.3);transition:all 0.1s}
+  .btn:active{transform:translateY(3px);box-shadow:none}
+  .btn-start{background:#00c853}.btn-stop{background:#d50000}.btn-nav{background:#0288d1}.btn-gold{background:#ffaa00;color:#000}
+  button:disabled{background:#232946!important;color:#555!important;box-shadow:none;cursor:not-allowed}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="player-profile">
-    <div class="avatar">🦊</div>
-    <div class="level-info">
-      <span class="level-title">Seviye <span id="lvl-num">1</span></span>
-      <span class="level-name" id="lvl-name">Çaylak İzcisi</span>
+  <div class="profile">
+    <div class="avatar">🚀</div>
+    <div>
+      <div class="lvl-title">Ajan Seviyesi <span id="lvl-num">1</span></div>
+      <div class="lvl-name" id="lvl-name">Siber Çaylak</div>
     </div>
   </div>
-  <div>
-    <div class="xp-container">
-      <div class="xp-bar" id="xp-bar"></div>
-      <div class="xp-text" id="xp-text">0 / 500 XP</div>
-    </div>
+  <div class="xp-box">
+    <div class="xp-fill" id="xp-fill"></div>
+    <div class="xp-text" id="xp-text">0 / 500 XP</div>
   </div>
 </header>
 
 <div id="stats-bar">
-  <div class="stat-item">Deneme: <span id="stat-trials">0/10</span></div>
-  <div class="stat-item">Süre: <span id="stat-timer">0.00 s</span></div>
-  <div class="stat-item">Skor: <span id="stat-score">0</span></div>
-  <div class="stat-item">Hata: <span id="stat-errors">0</span></div>
+  <div>Görev: <span class="stat-val" id="st-trial">0/10</span></div>
+  <div>Sayaç: <span class="stat-val" id="st-time">0.00s</span></div>
+  <div>Skor: <span class="stat-val" id="st-score">0</span></div>
+  <div>Hata: <span class="stat-val" id="st-errors">0</span></div>
 </div>
 
-<div id="main-container">
-  <!-- 1. MENÜ EKRANI -->
+<div id="app-body">
+
+  <!-- MENÜ EKRANI -->
   <div id="menu-view">
-    <div class="game-card" onclick="openGame('gonogo')">
-      <div class="icon">🐹</div>
-      <div class="title">Köstebek Yakalama</div>
-      <div class="category">Go/No-Go İnhibisyon</div>
-    </div>
-    <div class="game-card" onclick="openGame('stroop')">
-      <div class="icon">🧪</div>
-      <div class="title">Sihirli İksirler</div>
-      <div class="category">Stroop Renk Çatışması</div>
-    </div>
-    <div class="game-card" onclick="openGame('simon')">
-      <div class="icon">🐵</div>
-      <div class="title">Çılgın Maymun</div>
-      <div class="category">Simon Effect Mekânsal</div>
-    </div>
-    <div class="game-card" onclick="openGame('flanker')">
-      <div class="icon">🐟</div>
-      <div class="title">Balık Sürüsü</div>
-      <div class="category">Flanker Dikkat</div>
-    </div>
-    <div class="game-card" onclick="openGame('antisaccade')">
+    <div class="game-card" onclick="selectGame('cyber_thief')">
       <div class="icon">🥷</div>
-      <div class="title">Ninja Kaçış</div>
-      <div class="category">Anti-Saccade Refleks</div>
+      <div class="title">Siber Hırsız Avı</div>
+      <div class="tag">Go / No-Go İnhibisyon</div>
     </div>
-    <div class="game-card" onclick="openGame('pvt')">
-      <div class="icon">🐉</div>
-      <div class="title">Ejderha Ateşi</div>
-      <div class="category">Basit Reaksiyon (PVT)</div>
+    <div class="game-card" onclick="selectGame('magic_lab')">
+      <div class="icon">🧪</div>
+      <div class="title">Büyülü İksir Labı</div>
+      <div class="tag">Stroop Renk Çatışması</div>
+    </div>
+    <div class="game-card" onclick="selectGame('space_escape')">
+      <div class="icon">🛸</div>
+      <div class="title">Galaksi Kaçışı</div>
+      <div class="tag">Simon Mekânsal Uyum</div>
+    </div>
+    <div class="game-card" onclick="selectGame('pearl_diver')">
+      <div class="icon">🦪</div>
+      <div class="title">Sualtı İnci Avı</div>
+      <div class="tag">PVT Basit Reaksiyon</div>
     </div>
   </div>
 
-  <!-- 2. OYUN SAHNENİ -->
-  <div id="game-view">
-    <div id="instruction-card">
-      <h3 id="instr-title">Oyun Adı</h3>
-      <p id="instr-text">Oyun yönergesi yükleniyor...</p>
-      <button id="start-btn" class="btn btn-start" style="max-width:none;width:100%;padding:12px 0;">OYUNU BAŞLAT 🚀</button>
+  <!-- OYUN SAHNESİ -->
+  <div id="game-stage">
+    
+    <!-- Yönerge Kartı -->
+    <div id="card-overlay">
+      <h2 id="card-title">Görev Başlığı</h2>
+      <p id="card-desc">Görev açıklaması yükleniyor...</p>
+      <button class="btn btn-start" style="max-width:none;width:100%;padding:14px 0;" onclick="startGame()">GÖREVE BAŞLA 🚀</button>
     </div>
 
-    <div id="target-circle"></div>
-    <div id="dual-buttons">
-      <div class="choice-btn btn-left" id="btn-left-opt">SOL</div>
-      <div class="choice-btn btn-right" id="btn-right-opt">SAĞ</div>
+    <!-- Oyun 1: Siber Hırsız -->
+    <div id="cyber-door" onclick="handleInput('thief_tap')">
+      <div id="cyber-character">🥷</div>
+      <div id="cyber-label">HIRSIZ!</div>
     </div>
-    <div id="spatial-grid">
-      <div class="spatial-btn" data-key="red" style="background:#FF1744"></div>
-      <div class="spatial-btn" data-key="blue" style="background:#29B6F6"></div>
-      <div class="spatial-btn" data-key="green" style="background:#00E676"></div>
-      <div class="spatial-btn" data-key="yellow" style="background:#FFEA00"></div>
+
+    <!-- Oyun 2: İksir Lab -->
+    <div id="potion-cauldron">
+      <div id="cauldron-liquid">KIRMIZI</div>
     </div>
+    <div id="potion-shelf">
+      <div class="potion-btn" style="border-color:#ff1744" onclick="handleInput('potion_red')">🔴</div>
+      <div class="potion-btn" style="border-color:#29b6f6" onclick="handleInput('potion_blue')">🔵</div>
+      <div class="potion-btn" style="border-color:#00e676" onclick="handleInput('potion_green')">🟢</div>
+      <div class="potion-btn" style="border-color:#ffea00" onclick="handleInput('potion_yellow')">🟡</div>
+    </div>
+
+    <!-- Oyun 3: Galaksi Kaçış -->
+    <div id="space-ship">🚀</div>
+    <div id="space-controls">
+      <div class="space-btn" style="background:#ff1744" onclick="handleInput('space_left')">SOL KALKAN</div>
+      <div class="space-btn" style="background:#29b6f6" onclick="handleInput('space_right')">SAĞ KALKAN</div>
+    </div>
+
+    <!-- Oyun 4: Sualtı İnci -->
+    <div id="clam-hint">İNCİ PARLADI! TIKLA!</div>
+    <div id="underwater-clam" onclick="handleInput('clam_tap')">🦪</div>
+
   </div>
+
 </div>
 
 <footer>
-  <button id="menu-btn" class="btn btn-menu" onclick="showMenu()">🎮 Menü</button>
-  <button id="stop-btn" class="btn btn-stop" disabled>Durdur</button>
-  <button id="export-btn" class="btn btn-gold" onclick="exportCSV()" disabled>CSV İndir</button>
-  <button class="btn btn-gold" onclick="openBadges()">🏆 Rozetler</button>
+  <button class="btn btn-nav" onclick="showMenu()">🎮 Menü</button>
+  <button id="btn-stop" class="btn btn-stop" onclick="stopGame()" disabled>Durdur</button>
+  <button id="btn-export" class="btn btn-gold" onclick="exportData()" disabled>CSV İndir</button>
 </footer>
 
-<!-- MADALYA MODAL -->
-<div id="badge-modal">
-  <div class="modal-box">
-    <h3 style="color:#FFD700;margin-top:0;">Kazanılan Madalyalar</h3>
-    <div class="badge-grid">
-      <div class="badge-item" id="badge-1">
-        <div class="b-icon">⚡</div>
-        <div class="b-name">Işık Hızı</div>
-      </div>
-      <div class="badge-item" id="badge-2">
-        <div class="b-icon">🎯</div>
-        <div class="b-name">Keskin Göz</div>
-      </div>
-      <div class="badge-item" id="badge-3">
-        <div class="b-icon">🧠</div>
-        <div class="b-name">Zihin Ustası</div>
-      </div>
-    </div>
-    <button class="btn" style="max-width:none;width:100%;" onclick="closeBadges()">Kapat</button>
-  </div>
-</div>
-
 <script>
-/* ---------- OYUNLAŞTIRMA & XP MOTORU ---------- */
+/* ---------- OYUNLAŞTIRMA & SİSTEM STATE ---------- */
 const Player = {
   xp: 0,
   level: 1,
-  titles: ["Çaylak İzcisi", "Refleks Çırağı", "Dikkat Avcısı", "Hız Şampiyonu", "Nöro Kaptan", "Zihin Ustası"]
+  titles: ["Siber Çaylak", "Bilişsel Ajan", "Zihin Dedektifi", "Refleks Ustası", "Galaksi Kaptanı"]
 };
 
-function addXP(amount) {
-  Player.xp += amount;
-  const nextLvlXp = Player.level * 500;
-  if (Player.xp >= nextLvlXp && Player.level < Player.titles.length) {
-    Player.level++;
-    alert(`🎉 TEBRİKLER! SEVİYE ATLADIN!\nYeni Unvanın: ${Player.titles[Player.level - 1]}`);
-  }
-  updatePlayerUI();
-  checkBadges();
-}
+const Engine = {
+  active: false,
+  waiting: false,
+  mod: null,
+  trial: 0,
+  maxTrials: 10,
+  score: 0,
+  errors: 0,
+  t0: 0,
+  clockStart: 0,
+  timerInt: null,
+  trialTimeout: null,
+  rows: [],
+  sessionId: '',
+  stateData: {}
+};
 
-function updatePlayerUI() {
-  const currentLvlBase = (Player.level - 1) * 500;
-  const nextLvlTarget = Player.level * 500;
-  const progress = ((Player.xp - currentLvlBase) / (nextLvlTarget - currentLvlBase)) * 100;
-  
-  $('xp-bar').style.width = Math.min(100, Math.max(0, progress)) + '\%';$('xp-text').textContent = `${Player.xp} / ${nextLvlTarget} XP`;
-  $('lvl-num').textContent = Player.level;
-  $('lvl-name').textContent = Player.titles[Player.level - 1];
-}
-
-function checkBadges() {
-  if (Player.xp >= 150) unlockBadge('badge-1');
-  if (Player.xp >= 500) unlockBadge('badge-2');
-  if (Player.xp >= 1200) unlockBadge('badge-3');
-}
-function unlockBadge(id) { const el = $(id); if (el) el.classList.add('unlocked'); }
-function openBadges() { $('badge-modal').style.display = 'flex'; }
-function closeBadges() { $('badge-modal').style.display = 'none'; }
-
-/* ---------- SPPLAB BİLİŞSEL TEST MOTORU ---------- */
 const $=id=>document.getElementById(id);
 const rnd=n=>Math.floor(Math.random()*n);
 const pick=a=>a[rnd(a.length)];
-const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);const t=a[i];a[i]=a[j];a[j]=t;}return a;};
-const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
 
-const COLORS={
-red:{hex:'#FF1744',tr:'KIRMIZI'},
-blue:{hex:'#29B6F6',tr:'MAVİ'},
-green:{hex:'#00E676',tr:'YEŞİL'},
-yellow:{hex:'#FFEA00',tr:'SARI'}};
-const KEYS=Object.keys(COLORS);
-
-const S={mod:null,run:0,active:false,waiting:false,rows:[],idx:0,total:10,t0:0,clockStart:0,resp:null,sessionId:'',ctx:{}};
-
-const circle=$('target-circle'),gameView=$('game-view'),dualButtons=$('dual-buttons');
-const btnLeft=$('btn-left-opt'),btnRight=$('btn-right-opt'),spatialGrid=$('spatial-grid');
-const startBtn=$('start-btn'),stopBtn=$('stop-btn'),exportBtn=$('export-btn');
-const statTrials=$('stat-trials'),statTimer=$('stat-timer'),statScore=$('stat-score'),statErrors=$('stat-errors');
-const cones=Array.from(document.querySelectorAll('.spatial-btn'));
-
-let clockInt=null;
-function startClock(){stopClock();S.clockStart=performance.now();clockInt=setInterval(()=>{statTimer.textContent=((performance.now()-S.clockStart)/1000).toFixed(2)+' s';},50);}
-function stopClock(){if(clockInt)clearInterval(clockInt);clockInt=null;}
-
-let audioCtx=null;
-function initAudio(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
-function beep(freq,dur){dur=dur||0.15;try{initAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.setValueAtTime(freq,audioCtx.currentTime);g.gain.setValueAtTime(0.2,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}}
-
-function fb(ok){gameView.classList.remove('fb-ok','fb-bad');void gameView.offsetWidth;gameView.classList.add(ok?'fb-ok':'fb-bad');}
-function setCircle(x,y,o){o=o||{};circle.className=o.wide?'wide':'';circle.style.left=x+'%';circle.style.top=y+'%';circle.style.backgroundColor=o.bg||'#000';circle.style.color=o.color||'#fff';circle.textContent=o.text||'';circle.style.display='flex';}
-function setDual(l,r){btnLeft.textContent=l;btnRight.textContent=r;dualButtons.style.display='flex';}
-function setGrid(o){o=o||{};spatialGrid.style.display='grid';spatialGrid.classList.toggle('all-on',!!o.allOn);cones.forEach((c,i)=>{c.textContent=o.labels?o.labels[i]:'';c.classList.remove('active');});}
-function hideStim(){circle.style.display='none';dualButtons.style.display='none';spatialGrid.style.display='none';}
-
-function present(setup){const run=S.run;setup();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(run!==S.run||!S.active)return;S.t0=performance.now();S.waiting=true;}));}
-function delayThenPresent(setup){setTimeout(()=>{if(S.run===S.run&&S.active)present(setup);},500+rnd(1200));}
-
-function record(o){
-  const row={sessionId:S.sessionId,timestamp:new Date().toISOString(),module:S.mod,trial:S.idx,condition:o.cond||'',response:o.resp||'',rt:o.rt,correct:o.correct?1:0};
-  S.rows.push(row);
-  statErrors.textContent=S.rows.filter(x=>!x.correct).length;
-  if(o.correct) statScore.textContent = parseInt(statScore.textContent) + 100;
-  statTrials.textContent = `${S.idx}/${S.total}`;
-}
-
-function endTrial(o){
-  S.waiting=false;S.resp=null;record(o);fb(o.correct);
-  if(o.correct) beep(600,0.1); else beep(150,0.2);
-  hideStim();
-  setTimeout(nextTrial,600);
-}
-
-function input(src,ev){if(ev&&ev.cancelable)ev.preventDefault();if(!S.active||!S.waiting||!S.resp)return;S.resp(src,ev);}
-
-function nextTrial(){
-  if(S.idx>=S.total){finishTest();return;}
-  S.idx++;S.waiting=false;
-  MODS[S.mod].trial();
-}
-
-/* ---------- ÇOCUK TEMALI MODÜLLER ---------- */
-const MODS={
-gonogo:{
-  title:"🐹 Köstebek Yakalama",
-  text:"Yeşil Köstebek (DOKUN) çıkınca dokun! Kırmızı Bomba (DUR) çıkınca SAKIN DOKUNMA!",
-  setup(){S.ctx.plan=shuffle([1,1,1,1,1,1,1,0,0,0]);},
-  trial(){
-    const go=S.ctx.plan[S.idx-1];
-    delayThenPresent(()=>{
-      setCircle(50,42,{bg:go?'#00E676':'#FF1744',color:'#000',text:go?'🐹 DOKUN!':'💣 DUR!'});
-      S.resp=(src)=>{if(src!=='circle')return;endTrial({correct:go,rt:Math.round(performance.now()-S.t0),cond:go?'GO':'NOGO',resp:'TAP'});};
-      if(go) setTimeout(()=>endTrial({correct:false,rt:null,cond:'GO',resp:'NONE'}),1500);
-      else setTimeout(()=>endTrial({correct:true,rt:null,cond:'NOGO',resp:'NONE'}),1200);
-    });
-  }
-},
-stroop:{
-  title:"🧪 Sihirli İksirler",
-  text:"Yazının ne olduğuna BAKMA! İksir yazısının GERÇEK RENGİ neyse aşağıdaki o renge dokun!",
-  setup(){setGrid({allOn:true});},
-  trial(){
-    const cong=Math.random()<0.5;
-    const word=pick(KEYS),ink=cong?word:pick(KEYS.filter(k=>k!==word));
-    delayThenPresent(()=>{
-      setCircle(50,25,{wide:true,bg:'#000',color:COLORS[ink].hex,text:COLORS[word].tr});
-      S.resp=(src)=>{
-        if(src.indexOf('cone:')!==0)return;
-        const k=src.slice(5),ok=k===ink;
-        endTrial({correct:ok,rt:Math.round(performance.now()-S.t0),cond:cong?'CONGRUENT':'INCONGRUENT',resp:k});
-      };
-      setTimeout(()=>endTrial({correct:false,rt:null,cond:'TIMEOUT',resp:'NONE'}),3000);
-    });
-  }
-},
-simon:{
-  title:"🐵 Çılgın Maymun",
-  text:"Nerede olduğuna bakma! Kırmızı Maymun = SOL, Mavi Maymun = SAĞ butonuna bas!",
-  setup(){setDual("KIRMIZI","MAVİ");},
-  trial(){
-    const red=Math.random()<0.5,correct=red?'LEFT':'RIGHT';
-    const left=Math.random()<0.5;
-    delayThenPresent(()=>{
-      setCircle(left?22:78,40,{bg:red?'#FF1744':'#29B6F6',text:red?'🐵':'🐵'});
-      S.resp=(src)=>{if(src!=='left'&&src!=='right')return;const ans=src.toUpperCase(),ok=ans===correct;endTrial({correct:ok,rt:Math.round(performance.now()-S.t0),cond:left===(correct==='LEFT')?'CONGRUENT':'INCONGRUENT',resp:ans});};
-      setTimeout(()=>endTrial({correct:false,rt:null,cond:'TIMEOUT',resp:'NONE'}),2000);
-    });
-  }
-},
-flanker:{
-  title:"🐟 Balık Sürüsü",
-  text:"Sadece ORTADAKİ lider balığın yüzdüğü yöndeki butona bas! Yanındakileri görmezden gel.",
-  setup(){setDual("◀ SOL","SAĞ ▶");},
-  trial(){
-    const pool=[{t:'>>>>',c:'RIGHT'},{t:'<<<<',c:'LEFT'},{t:'<<><',c:'RIGHT'},{t:'>><>',c:'LEFT'}];
-    const s=pick(pool);
-    delayThenPresent(()=>{
-      setCircle(50,40,{wide:true,bg:'#222',color:'#00E5FF',text:s.t});
-      S.resp=(src)=>{if(src!=='left'&&src!=='right')return;const ans=src.toUpperCase(),ok=ans===s.c;endTrial({correct:ok,rt:Math.round(performance.now()-S.t0),cond:'FLANKER',resp:ans});};
-      setTimeout(()=>endTrial({correct:false,rt:null,cond:'TIMEOUT',resp:'NONE'}),2000);
-    });
-  }
-},
-antisaccade:{
-  title:"🥷 Ninja Kaçış",
-  text:"Sarı Fener yanacak! Fenere DOKUNMA! Ekranın ZIT tarafına dokunarak kaç!",
-  setup(){},
-  trial(){
-    const left=Math.random()<0.5,correct=left?'RIGHT':'LEFT';
-    delayThenPresent(()=>{
-      setCircle(left?20:80,42,{bg:'#FFEA00',color:'#000',text:'⚡'});
-      setTimeout(()=>{circle.style.display='none';},300);
-      S.resp=(src)=>{
-        const ok=(src==='zoneR'&&correct==='RIGHT')||(src==='zoneL'&&correct==='LEFT');
-        endTrial({correct:ok,rt:Math.round(performance.now()-S.t0),cond:'ANTISACCADE',resp:src});
-      };
-      setTimeout(()=>endTrial({correct:false,rt:null,cond:'TIMEOUT',resp:'NONE'}),2500);
-    });
-  }
-},
-pvt:{
-  title:"🐉 Ejderha Ateşi",
-  text:"Ejderha YEŞİL olunca olabildiğince hızlı dokun! Kırmızı iken dokunma!",
-  setup(){},
-  trial(){
-    setCircle(50,42,{bg:'#333',color:'#999',text:'BEKLE...'});
-    setTimeout(()=>{
-      present(()=>{
-        setCircle(50,42,{bg:'#00E676',color:'#000',text:'DOKUN!'});
-        S.resp=(src)=>{if(src!=='circle')return;endTrial({correct:true,rt:Math.round(performance.now()-S.t0),cond:'PVT',resp:'TAP'});};
-        setTimeout(()=>endTrial({correct:false,rt:null,cond:'TIMEOUT',resp:'NONE'}),2500);
-      });
-    },1500+rnd(2500));
+/* ---------- TIMER & TIMEOUT YÖNETİMİ (BUG FIX) ---------- */
+function clearAllTimeouts() {
+  if (Engine.trialTimeout) {
+    clearTimeout(Engine.trialTimeout);
+    Engine.trialTimeout = null;
   }
 }
-};
 
-/* ---------- EKRAN GEÇİŞLERİ VE KONTROL ---------- */
-function showMenu(){
-  stopTest();
-  $('menu-view').style.display='grid';$('game-view').style.display='none';
+function startClock() {
+  stopClock();
+  Engine.clockStart = performance.now();
+  Engine.timerInt = setInterval(() => {
+    $('st-time').textContent = ((performance.now() - Engine.clockStart) / 1000).toFixed(2) + 's';
+  }, 50);
 }
 
-function openGame(modKey){
-  S.mod=modKey;
-  const m=MODS[modKey];
-  $('menu-view').style.display='none';$('game-view').style.display='flex';
-  $('instruction-card').style.display='block';$('instr-title').textContent=m.title;
-  $('instr-text').textContent=m.text;
-  hideStim();
+function stopClock() {
+  if (Engine.timerInt) clearInterval(Engine.timerInt);
+  Engine.timerInt = null;
 }
 
-function startTest(){
-  initAudio();
-  const m=MODS[S.mod];
-  S.run++;S.active=true;S.rows=[];S.idx=0;
-  S.sessionId=Date.now().toString(36);
+/* ---------- EKRAN YÖNETİMİ ---------- */
+function showMenu() {
+  stopGame();
+  $('menu-view').style.display = 'grid';$('game-stage').style.display = 'none';
+}
+
+function selectGame(modKey) {
+  Engine.mod = modKey;
+  $('menu-view').style.display = 'none';
+  $('game-stage').style.display = 'flex';$('card-overlay').style.display = 'block';
   
-  $('instruction-card').style.display='none';
-  stopBtn.disabled=false;exportBtn.disabled=true;
-  statScore.textContent='0';statErrors.textContent='0';
-  
-  if(m.setup) m.setup();
+  hideAllVisuals();
+
+  const configs = {
+    cyber_thief: {
+      title: "🥷 Siber Hırsız Avı",
+      desc: "Kapı açıldığında **Siber Hırsız (🥷)** çıkarsa hemen üzerine TIKLA!<br><br>Eğer **Masum Vatandaş (👨)** veya **Polis (👮)** çıkarsa **SAKIN DOKUNMA!**"
+    },
+    magic_lab: {
+      title: "🧪 Büyülü İksir Labı",
+      desc: "Kazandaki kelimenin ne YAZDIĞINA bakma!<br><br>Yazının **GERÇEK RENGİ** hangi iksirse alt taraftan o renk iksir şişesine bas!"
+    },
+    space_escape: {
+      title: "🛸 Galaksi Kaçışı",
+      desc: "Gelen tehlikeye karşı kalkanı aktifleştir!<br><br>**Kırmızı Tehlike = SOL KALKAN**<br>**Mavi Tehlike = SAĞ KALKAN**"
+    },
+    pearl_diver: {
+      title: "🦪 Sualtı İnci Avı",
+      desc: "Denizin dibindeki istiridye açılıp içindeki **PARLAK İNCİ (🔮)** göründüğü anda olabildiğince hızlı dokun!"
+    }
+  };
+
+  $('card-title').textContent = configs[modKey].title;
+  $('card-desc').innerHTML = configs[modKey].desc;
+}
+
+function hideAllVisuals() {
+  $('cyber-door').style.display = 'none';
+  $('potion-cauldron').style.display = 'none';$('potion-shelf').style.display = 'none';
+  $('space-ship').style.display = 'none';$('space-controls').style.display = 'none';
+  $('underwater-clam').style.display = 'none';$('clam-hint').style.display = 'none';
+}
+
+/* ---------- OYUN DÖNGÜSÜ (GAME LOOP) ---------- */
+function startGame() {
+  clearAllTimeouts();
+  Engine.active = true;
+  Engine.trial = 0;
+  Engine.score = 0;
+  Engine.errors = 0;
+  Engine.rows = [];
+  Engine.sessionId = Date.now().toString(36);
+
+  $('card-overlay').style.display = 'none';$('btn-stop').disabled = false;
+  $('btn-export').disabled = true;
+
+  updateStats();
   startClock();
   nextTrial();
 }
 
-function stopTest(){
-  S.active=false;S.run++;
-  stopClock();hideStim();
-  $('instruction-card').style.display='block';
-  stopBtn.disabled=true;
-  if(S.rows.length) exportBtn.disabled=false;
+function updateStats() {
+  $('st-trial').textContent = `${Engine.trial}/${Engine.maxTrials}`;
+  $('st-score').textContent = Engine.score;
+  $('st-errors').textContent = Engine.errors;
 }
 
-function finishTest(){
-  S.active=false;
-  stopClock();hideStim();
-  const correctCount = S.rows.filter(x=>x.correct).length;
-  const earnedXP = correctCount * 25 + 50;
+function nextTrial() {
+  clearAllTimeouts();
+  if (Engine.trial >= Engine.maxTrials) {
+    finishGame();
+    return;
+  }
+
+  Engine.trial++;
+  Engine.waiting = false;
+  updateStats();
+
+  hideAllVisuals();
+
+  // 1-2.5 saniye arası rastgele bekleme
+  const delay = 1000 + rnd(1500);
+  Engine.trialTimeout = setTimeout(() => {
+    if (Engine.active) presentStimulus();
+  }, delay);
+}
+
+/* ---------- UYARAN SUNUMU (STIMULUS PRESENTATION) ---------- */
+function presentStimulus() {
+  Engine.waiting = true;
+  Engine.t0 = performance.now();
+
+  if (Engine.mod === 'cyber_thief') {
+    const isThief = Math.random() < 0.65; // %65 Hırsız (Go), %35 Masum (No-Go)
+    Engine.stateData.isGo = isThief;
+
+    $('cyber-door').style.display = 'flex';
+    if (isThief) {
+      $('cyber-character').textContent = '🥷';
+      $('cyber-label').textContent = 'HIRSIZ!';$('cyber-label').style.color = '#ff1744';
+    } else {
+      const innocent = Math.random() < 0.5 ? '👨' : '👮';
+      $('cyber-character').textContent = innocent;
+      $('cyber-label').textContent = innocent === '👨' ? 'MASUM' : 'POLİS';
+      $('cyber-label').style.color = '#00e676';
+    }
+
+    // 1.4 saniye içinde tepki verilmezse
+    Engine.trialTimeout = setTimeout(() => {
+      if (Engine.waiting) {
+        if (isThief) handleResult(false, 'MISS', 1400, 'GO'); // Kaçırdı
+        else handleResult(true, 'NONE', 1400, 'NOGO'); // Doğru frenleme
+      }
+    }, 1400);
+
+  } else if (Engine.mod === 'magic_lab') {
+    const colors = ['red', 'blue', 'green', 'yellow'];
+    const colorTexts = { red: 'KIRMIZI', blue: 'MAVİ', green: 'YEŞİL', yellow: 'SARI' };
+    const colorHex = { red: '#ff1744', blue: '#29b6f6', green: '#00e676', yellow: '#ffea00' };
+
+    const wordKey = pick(colors);
+    const inkKey = Math.random() < 0.5 ? wordKey : pick(colors.filter(c => c !== wordKey));
+
+    Engine.stateData.correctColor = inkKey;
+
+    $('potion-cauldron').style.display = 'flex';$('potion-shelf').style.display = 'flex';
+    $('cauldron-liquid').textContent = colorTexts[wordKey];$('cauldron-liquid').style.color = colorHex[inkKey];
+
+    Engine.trialTimeout = setTimeout(() => {
+      if (Engine.waiting) handleResult(false, 'TIMEOUT', 2500, inkKey);
+    }, 2500);
+
+  } else if (Engine.mod === 'space_escape') {
+    const isRed = Math.random() < 0.5;
+    Engine.stateData.correctSide = isRed ? 'space_left' : 'space_right';
+
+    $('space-ship').style.display = 'block';$('space-controls').style.display = 'flex';
+    
+    // Gemi konumu
+    $('space-ship').style.left = (Math.random() < 0.5 ? '25\%' : '65\%');$('space-ship').textContent = isRed ? '🔴 🛸' : '🔵 🛸';
+
+    Engine.trialTimeout = setTimeout(() => {
+      if (Engine.waiting) handleResult(false, 'TIMEOUT', 2000, Engine.stateData.correctSide);
+    }, 2000);
+
+  } else if (Engine.mod === 'pearl_diver') {
+    $('underwater-clam').style.display = 'block';$('underwater-clam').textContent = '🦪';
+    $('clam-hint').style.display = 'none';
+
+    // 1.5 - 3.5 sn sonra inci açılır
+    const clamDelay = 1500 + rnd(2000);
+    Engine.trialTimeout = setTimeout(() => {
+      if (!Engine.active) return;
+      $('underwater-clam').textContent = '🔮';
+      $('clam-hint').style.display = 'block';
+      Engine.t0 = performance.now();
+      Engine.waiting = true;
+
+      Engine.trialTimeout = setTimeout(() => {
+        if (Engine.waiting) handleResult(false, 'TIMEOUT', 2000, 'PVT');
+      }, 2000);
+    }, clamDelay);
+  }
+}
+
+/* ---------- ETKİLEŞİM VE GİRDİ YÖNETİMİ ---------- */
+function handleInput(type) {
+  if (!Engine.active || !Engine.waiting) return;
+
+  clearAllTimeouts();
+  const rt = Math.round(performance.now() - Engine.t0);
+
+  if (Engine.mod === 'cyber_thief') {
+    if (type === 'thief_tap') {
+      if (Engine.stateData.isGo) handleResult(true, 'TAP', rt, 'GO');
+      else handleResult(false, 'TAP', rt, 'NOGO'); // Masuma bastı
+    }
+
+  } else if (Engine.mod === 'magic_lab') {
+    const map = { potion_red: 'red', potion_blue: 'blue', potion_green: 'green', potion_yellow: 'yellow' };
+    const selected = map[type];
+    const ok = selected === Engine.stateData.correctColor;
+    handleResult(ok, selected, rt, Engine.stateData.correctColor);
+
+  } else if (Engine.mod === 'space_escape') {
+    const ok = type === Engine.stateData.correctSide;
+    handleResult(ok, type, rt, Engine.stateData.correctSide);
+
+  } else if (Engine.mod === 'pearl_diver') {
+    if (type === 'clam_tap') {
+      handleResult(true, 'TAP', rt, 'PVT');
+    }
+  }
+}
+
+/* ---------- SONUÇ VE VERİ KAYDI ---------- */
+function handleResult(correct, response, rt, cond) {
+  Engine.waiting = false;
+
+  if (correct) {
+    Engine.score += Math.max(50, 500 - Math.floor(rt / 2));
+    feedback(true);
+  } else {
+    Engine.errors++;
+    Engine.score = Math.max(0, Engine.score - 100);
+    feedback(false);
+  }
+
+  // Veri Kaydı (Milisaniye Hasselinde)
+  Engine.rows.push({
+    sessionId: Engine.sessionId,
+    timestamp: new Date().toISOString(),
+    module: Engine.mod,
+    trial: Engine.trial,
+    condition: cond,
+    response: response,
+    rt: rt,
+    correct: correct ? 1 : 0,
+    score: Engine.score
+  });
+
+  updateStats();
+  Engine.trialTimeout = setTimeout(nextTrial, 800);
+}
+
+function feedback(good) {
+  const stage = $('game-stage');
+  stage.classList.remove('fb-good', 'fb-bad');
+  void stage.offsetWidth;
+  stage.classList.add(good ? 'fb-good' : 'fb-bad');
+}
+
+/* ---------- BİTİŞ VE XP SİSTEMİ ---------- */
+function stopGame() {
+  clearAllTimeouts();
+  Engine.active = false;
+  stopClock();
+  hideAllVisuals();
+  $('card-overlay').style.display = 'block';$('card-title').textContent = "Görev Durduruldu";
+  $('card-desc').textContent = "İstediğin zaman menüden yeni bir göreve başlayabilirsin.";
+  $('btn-stop').disabled = true;
+  if (Engine.rows.length) $('btn-export').disabled = false;
+}
+
+function finishGame() {
+  clearAllTimeouts();
+  Engine.active = false;
+  stopClock();
+  hideAllVisuals();
+
+  const correctCount = Engine.rows.filter(r => r.correct).length;
+  const earnedXP = correctCount * 30 + 100;
+  
   addXP(earnedXP);
 
-  $('instruction-card').style.display='block';$('instr-title').textContent="TEBRİKLER! OYUN BİTTİ 🎉";
-  $('instr-text').innerHTML=`Toplam Doğru: <b>${correctCount}/${S.total}</b><br>Kazanılan Puan: <b>+${earnedXP} XP</b>`;
-  stopBtn.disabled=true;exportBtn.disabled=false;
+  $('card-overlay').style.display = 'block';$('card-title').textContent = "GÖREV TAMAMLANDI! 🎉";
+  $('card-desc').innerHTML = `
+    Başarılı Operasyon: <b>${correctCount} / ${Engine.maxTrials}</b><br>
+    Kazanılan Puan: <b>+${earnedXP} XP</b><br>
+    Toplam Skor: <b>${Engine.score}</b>
+  `;
+
+  $('btn-stop').disabled = true;
+  $('btn-export').disabled = false;
 }
 
-function exportCSV(){
-  if(!S.rows.length)return;
-  const head="SessionID,Timestamp,Module,Trial,Condition,Response,RT_ms,Correct\n";
-  const body=S.rows.map(r=>`${r.sessionId},${r.timestamp},${r.module},${r.trial},${r.condition},${r.response},${r.rt},${r.correct}`).join('\n');
-  const blob=new Blob(["\uFEFF"+head+body],{type:'text/csv;charset=utf-8'});
-  const url=URL.ObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='SPPLab_Kids_'+S.mod+'_'+new Date().toISOString().slice(0,10)+'.csv';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
+function addXP(amount) {
+  Player.xp += amount;
+  const targetXp = Player.level * 500;
+  if (Player.xp >= targetXp && Player.level < Player.titles.length) {
+    Player.level++;
+    alert(`🎉 TEBRİKLER AJAN!\nSeviye Atladın: ${Player.titles[Player.level - 1]}`);
+  }
+  updatePlayerUI();
 }
 
-/* Event Listener'lar */
-startBtn.addEventListener('click',startTest);
-stopBtn.addEventListener('click',stopTest);
+function updatePlayerUI() {
+  const base = (Player.level - 1) * 500;
+  const target = Player.level * 500;
+  const pct = ((Player.xp - base) / (target - base)) * 100;
 
-circle.addEventListener('pointerdown',e=>input('circle',e));
-btnLeft.addEventListener('pointerdown',e=>input('left',e));
-btnRight.addEventListener('pointerdown',e=>input('right',e));
-cones.forEach(c=>c.addEventListener('pointerdown',e=>input('cone:'+c.dataset.key,e)));
+  $('xp-fill').style.width = Math.min(100, Math.max(0, pct)) + '\%';$('xp-text').textContent = `${Player.xp} / ${target} XP`;
+  $('lvl-num').textContent = Player.level;
+  $('lvl-name').textContent = Player.titles[Player.level - 1];
+}
 
-// Anti-saccade dokunma bölgeleri
-gameView.addEventListener('pointerdown',e=>{
-  if(!S.active||!S.waiting||S.mod!=='antisaccade')return;
-  const x=e.clientX/window.innerWidth;
-  input(x<0.5?'zoneL':'zoneR',e);
-});
+function exportData() {
+  if (!Engine.rows.length) return;
+  const head = "SessionID,Timestamp,Module,Trial,Condition,Response,RT_ms,Correct,Score\n";
+  const body = Engine.rows.map(r => `${r.sessionId},${r.timestamp},${r.module},${r.trial},${r.condition},${r.response},${r.rt},${r.correct},${r.score}`).join('\n');
+  
+  const blob = new Blob(["\uFEFF" + head + body], { type: 'text/csv;charset=utf-8' });
+  const url = URL.ObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `SPPLab_Kids_${Engine.mod}_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
 updatePlayerUI();
 </script>
