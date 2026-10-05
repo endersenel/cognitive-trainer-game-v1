@@ -3,330 +3,194 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SPPLab Kids - Bilişsel Araba Yarışı</title>
+<title>SPPLab Kids - Bilişsel Akademi</title>
 <style>
   *{box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-  html,body{width:100%;height:100%;margin:0;padding:0;background:#1a1c23;color:#fff;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;display:flex;flex-direction:column;overflow:hidden}
+  body{margin:0;padding:0;background:#12131C;color:#fff;font-family:'Comic Sans MS', 'Segoe UI', sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden}
 
-  /* Çocuk Dostu Arayüz Elemanları */
-  header{background:#252836;padding:10px;text-align:center;border-bottom:3px solid #ffcc00;box-shadow:0 4px 10px rgba(0,0,0,0.3)}
-  h1{margin:0;font-size:clamp(1.1rem,4vw,1.5rem);color:#ffcc00;text-transform:uppercase;letter-spacing:1px;text-shadow:2px 2px #000}
+  /* Oyun Başlığı & XP Panosu */
+  header{background:#1E202F;padding:10px;border-bottom:3px solid #FFD700;display:flex;justify-content:space-between;align-items:center}
+  .player-profile{display:flex;align-items:center;gap:10px}
+  .avatar{width:45px;height:45px;background:#FFD700;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px}
+  .level-info{display:flex;flex-direction:column}
+  .level-title{font-size:0.75rem;color:#AAA}
+  .level-name{font-size:0.95rem;font-weight:bold;color:#FFD700}
+
+  /* XP Bar */
+  .xp-container{width:140px;background:#2A2D40;height:14px;border-radius:7px;overflow:hidden;border:1px solid #FFD700;position:relative}
+  .xp-bar{width:0%;height:100%;background:linear-gradient(90deg, #FFD700, #FF5722);transition:width 0.3s}
+  .xp-text{position:absolute;width:100%;text-align:center;font-size:9px;line-height:14px;font-weight:bold;color:#FFF;text-shadow:1px 1px #000}
+
+  /* Ana Oyun Seçim Alanı */
+  #game-area{flex:1;position:relative;display:flex;justify-content:center;align-items:center;padding:15px;background:#181A26}
   
-  .kids-bar{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:6px}
-  .kids-field{display:flex;align-items:center;background:#14161d;padding:4px 8px;border-radius:20px;border:1px solid #ffcc00}
-  .kids-field label{font-size:.75rem;color:#ffcc00;margin-right:4px;font-weight:bold}
-  .kids-field input, .kids-field select{background:transparent;color:#fff;border:none;font-size:.8rem;outline:none;font-weight:bold}
+  /* Modül Seçim Kartları */
+  .game-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;width:100%;max-width:600px}
+  .game-card{background:#232638;border:2px solid #3B3E5B;border-radius:16px;padding:12px;text-align:center;cursor:pointer;transition:transform 0.1s, border-color 0.2s}
+  .game-card:hover{transform:scale(1.03);border-color:#FFD700}
+  .game-card .icon{font-size:36px;margin-bottom:6px}
+  .game-card .title{font-size:0.85rem;font-weight:bold;color:#FFF}
+  .game-card .category{font-size:0.65rem;color:#00E5FF;margin-top:4px}
 
-  #stats-bar{display:flex;justify-content:space-around;background:#2d3243;padding:10px;font-size:clamp(.8rem,2.5vw,1rem);font-weight:bold;border-bottom:2px solid #3b4259}
-  .stat-card{background:#1e222d;padding:4px 12px;border-radius:12px;border:1px solid #4f5875;display:flex;align-items:center;gap:6px}
-  .stat-card span{color:#00ff88;font-size:1.1em}
-
-  #game-area{flex:1;position:relative;width:100%;background:#11141c;display:flex;justify-content:center;align-items:center;overflow:hidden}
-
-  /* Yol & Yarış Teması */
-  .road-background{position:absolute;width:100%;height:100%;background:linear-gradient(to bottom, #2c3e50 0%, #000000 100%);display:flex;justify-content:center}
-  .lane-markings{width:10px;height:100%;background:repeating-linear-gradient(to bottom, #fff 0px, #fff 30px, transparent 30px, transparent 60px);animation:roadMove 0.8s linear infinite}
-  @keyframes roadMove { from{background-position:0 0} to{background-position:0 60px} }
-
-  /* Arabalar */
-  #player-car{position:absolute;bottom:30px;width:90px;height:140px;font-size:80px;text-align:center;line-height:140px;transition:transform 0.1s;z-index:10;cursor:pointer;filter:drop-shadow(0 10px 8px rgba(0,0,0,0.5))}
-  #player-car.bounce{animation:carBounce 0.3s ease}
-  @keyframes carBounce { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
-
-  /* Trafik Işığı / Komut Panosu */
-  #traffic-light{position:absolute;top:20px;background:#222;padding:15px 25px;border-radius:25px;border:4px solid #444;display:none;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 20px rgba(0,0,0,0.8);z-index:20}
-  .light{width:50px;height:50px;border-radius:50%;opacity:0.2;transition:opacity 0.2s, box-shadow 0.2s}
-  .light.red{background:#ff1744}.light.green{background:#00e676}
-  .light.active{opacity:1;box-shadow:0 0 25px currentColor}
-  #light-text{font-size:1.2rem;font-weight:900;color:#fff;margin-top:5px;text-shadow:1px 1px #000}
-
-  /* Kart/Yönerge */
-  #instruction-card{position:absolute;width:min(90%,420px);background:rgba(30,34,45,0.95);border:3px solid #ffcc00;padding:20px;border-radius:20px;text-align:center;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,0.8)}
-  #instruction-card h3{color:#ffcc00;margin-top:0;font-size:1.4rem}
-  #instruction-card p{font-size:.95rem;line-height:1.5;color:#ddd}
+  /* Rozet Paneli Modal */
+  #badge-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:2000;justify-content:center;align-items:center}
+  .modal-content{background:#1E202F;border:3px solid #FFD700;border-radius:20px;padding:20px;width:90%;max-width:400px;text-align:center}
+  .badge-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin:15px 0}
+  .badge-item{background:#2A2D40;padding:10px;border-radius:12px;opacity:0.3;filter:grayscale(1)}
+  .badge-item.unlocked{opacity:1;filter:none;border:1px solid #FFD700}
+  .badge-item .b-icon{font-size:28px}
+  .badge-item .b-name{font-size:0.65rem;margin-top:4px;color:#FFF}
 
   /* Kontrol Butonları */
-  #controls{padding:10px;background:#252836;display:flex;gap:10px;justify-content:center;border-top:2px solid #333}
-  button{flex:1;max-width:160px;min-height:50px;font-size:1rem;font-weight:900;border:none;border-radius:12px;cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,0.3);transition:transform 0.1s}
-  button:active{transform:translateY(3px);box-shadow:none}
-  .btn-start{background:#00c853}.btn-stop{background:#d50000}.btn-export{background:#0288d1}
-
-  /* Efektler */
-  @keyframes shake { 0%,100%{transform:translate(0,0)} 20%,60%{transform:translate(-8px,0)} 40%,80%{transform:translate(8px,0)} }
-  .shake-target{animation:shake 0.4s ease-in-out}
+  footer{padding:10px;background:#1E202F;display:flex;gap:10px;justify-content:center;border-top:1px solid #333}
+  .btn{padding:10px 16px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;color:#FFF;background:#29B6F6}
+  .btn-gold{background:#FFD700;color:#000}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🏎️ SPPLab Kids: Bilişsel Sürücü</h1>
-  <div class="kids-bar">
-    <div class="kids-field"><label>Pilot ID:</label><input type="text" id="athlete-id" value="KID-01" style="width:70px"></div>
-    <div class="kids-field"><label>Yaş:</label><input type="number" id="athlete-age" value="8" style="width:40px"></div>
-    <div class="kids-field"><label>Oyun:</label>
-      <select id="module-select">
-        <option value="gonogo_car">🏎️ Gaz/Fren Yarışı (Go/No-Go)</option>
-        <option value="choice_lane">↔️ Şerit Değiştirme (Çoklu Seçenek)</option>
-      </select>
+  <div class="player-profile">
+    <div class="avatar">🦊</div>
+    <div class="level-info">
+      <span class="level-title">Sınıf / Seviye <span id="lvl-num">1</span></span>
+      <span class="level-name" id="lvl-name">Çaylak İzcisi</span>
+    </div>
+  </div>
+  <div>
+    <div class="xp-container">
+      <div class="xp-bar" id="xp-bar"></div>
+      <div class="xp-text" id="xp-text">0 / 500 XP</div>
     </div>
   </div>
 </header>
 
-<div id="stats-bar">
-  <div class="stat-card">Tur: <span id="stat-trials">0/10</span></div>
-  <div class="stat-card">Süre: <span id="stat-timer">0.00s</span></div>
-  <div class="stat-card">Skor: <span id="stat-score">0</span> 🏆</div>
-  <div class="stat-card">Hata: <span id="stat-errors">0</span> 💥</div>
-</div>
-
 <div id="game-area">
-  <div class="road-background">
-    <div class="lane-markings"></div>
+  <!-- Oyun Modül Listesi -->
+  <div class="game-grid" id="menu-grid">
+    <div class="game-card" onclick="launchGame('gonogo', 'Köstebek Yakalama', 150)">
+      <div class="icon">🐹</div>
+      <div class="title">Köstebek Yakalama</div>
+      <div class="category">Go/No-Go İnhibisyon</div>
+    </div>
+    <div class="game-card" onclick="launchGame('stroop', 'Sihirli İksirler', 200)">
+      <div class="icon">🧪</div>
+      <div class="title">Sihirli İksirler</div>
+      <div class="category">Stroop Çatışma</div>
+    </div>
+    <div class="game-card" onclick="launchGame('trailA', 'Yıldız Birleştirme', 180)">
+      <div class="icon">⭐</div>
+      <div class="title">Yıldız Birleştirme</div>
+      <div class="category">Trail Making A</div>
+    </div>
+    <div class="game-card" onclick="launchGame('mot', 'Kayıp Denizanaları', 250)">
+      <div class="icon">🪼</div>
+      <div class="title">Kayıp Denizanaları</div>
+      <div class="category">Çoklu Nesne Takibi</div>
+    </div>
   </div>
-
-  <div id="instruction-card">
-    <h3 id="instr-title">Yarışa Hazır Mısın?</h3>
-    <p id="instr-text">Işık **YEŞİL** yandığında veya **"GAZ!"** yazdığında hemen arabana dokun!<br><br>Işık **KIRMIZI** yandığında veya **"FREN!"** yazdığında **SAKIN DOKUNMA!**</p>
-    <button class="btn-start" onclick="startTest()">YARIŞI BAŞLAT 🚀</button>
-  </div>
-
-  <!-- Trafik Işığı -->
-  <div id="traffic-light">
-    <div class="light red" id="light-red"></div>
-    <div class="light green" id="light-green"></div>
-    <div id="light-text">BEKLE...</div>
-  </div>
-
-  <!-- Oyuncu Arabası -->
-  <div id="player-car" style="display:none;">🏎️</div>
 </div>
 
-<div id="controls">
-  <button id="start-btn" class="btn-start" onclick="startTest()">BAŞLAT</button>
-  <button id="stop-btn" class="btn-stop" onclick="stopTest()" disabled>DURDUR</button>
-  <button id="export-btn" class="btn-export" onclick="exportCSV()" disabled>VERİ İNDİR (CSV)</button>
+<footer>
+  <button class="btn btn-gold" onclick="openBadges()">🏆 Madalyalarım</button>
+  <button class="btn" onclick="resetProgress()">🔄 İlerlemeyi Sıfırla</button>
+</footer>
+
+<!-- Madalya Penceresi -->
+<div id="badge-modal">
+  <div class="modal-content">
+    <h3 style="color:#FFD700;margin-top:0;">Kazanılan Madalyalar</h3>
+    <div class="badge-grid">
+      <div class="badge-item" id="badge-1">
+        <div class="b-icon">⚡</div>
+        <div class="b-name">Işık Hızı</div>
+      </div>
+      <div class="badge-item" id="badge-2">
+        <div class="b-icon">🎯</div>
+        <div class="b-name">Keskin Göz</div>
+      </div>
+      <div class="badge-item" id="badge-3">
+        <div class="b-icon">🧠</div>
+        <div class="b-name">Zihin Ustası</div>
+      </div>
+    </div>
+    <button class="btn" onclick="closeBadges()">Kapat</button>
+  </div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const rnd=n=>Math.floor(Math.random()*n);
-
-const S = {
-  active: false,
-  waiting: false,
-  idx: 0,
-  total: 10,
-  score: 0,
-  errors: 0,
-  t0: 0,
-  clockStart: 0,
-  rows: [],
-  sessionId: '',
-  timerInt: null
+// Oyuncu İlerleme Durumu
+const Player = {
+  xp: 0,
+  level: 1,
+  badges: new Set(),
+  titles: [
+    "Çaylak İzcisi",
+    "Refleks Çırağı",
+    "Dikkat Avcısı",
+    "Hız Şampiyonu",
+    "Nöro Kaptan",
+    "Zihin Ustası"
+  ]
 };
 
-// Ses Efektleri (Web Audio API)
-let audioCtx = null;
-function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function playSound(type){
-  if(!audioCtx) return;
-  const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
-  osc.connect(g); g.connect(audioCtx.destination);
+function addXP(amount) {
+  Player.xp += amount;
+  const nextLvlXp = Player.level * 500;
   
-  if(type==='go'){
-    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-    g.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-  } else if(type==='stop') {
-    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-    g.gain.setValueAtTime(0.4, audioCtx.currentTime);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-  } else if(type==='win') {
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-    g.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+  if (Player.xp >= nextLvlXp) {
+    Player.level++;
+    if (Player.level > Player.titles.length) Player.level = Player.titles.length;
+    alert(`🎉 TEBRİKLER! SEVİYE ATLADIN!\nYeni Unvanın: ${Player.titles[Player.level - 1]}`);
+  }
+  
+  updateUI();
+  checkBadges();
+}
+
+function updateUI() {
+  const currentLvlBase = (Player.level - 1) * 500;
+  const nextLvlTarget = Player.level * 500;
+  const progress = ((Player.xp - currentLvlBase) / (nextLvlTarget - currentLvlBase)) * 100;
+  
+  document.getElementById('xp-bar').style.width = Math.min(100, Math.max(0, progress)) + '%';
+  document.getElementById('xp-text').textContent = `${Player.xp} / ${nextLvlTarget} XP`;
+  document.getElementById('lvl-num').textContent = Player.level;
+  document.getElementById('lvl-name').textContent = Player.titles[Player.level - 1];
+}
+
+function checkBadges() {
+  if (Player.xp >= 150) unlockBadge('badge-1');
+  if (Player.xp >= 500) unlockBadge('badge-2');
+  if (Player.xp >= 1200) unlockBadge('badge-3');
+}
+
+function unlockBadge(id) {
+  const el = document.getElementById(id);
+  if (el && !el.classList.contains('unlocked')) {
+    el.classList.add('unlocked');
   }
 }
 
-function startClock(){
-  S.clockStart = performance.now();
-  S.timerInt = setInterval(()=>{
-    $('stat-timer').textContent = ((performance.now() - S.clockStart)/1000).toFixed(2) + 's';
-  }, 50);
-}
-function stopClock(){ clearInterval(S.timerInt); }
-
-function startTest(){
-  initAudio();
-  S.active = true;
-  S.idx = 0;
-  S.score = 0;
-  S.errors = 0;
-  S.rows = [];
-  S.sessionId = Date.now().toString(36);
+function launchGame(modKey, gameTitle, rewardXp) {
+  // Test tamamlama simülasyonu (Mevcut SPPLab motoruna bağlanacak kısım)
+  alert(`"${gameTitle}" Oyunu Başlatılıyor!\n\nTamamladığında +${rewardXp} XP kazanacaksın.`);
   
-  $('instruction-card').style.display = 'none';$('player-car').style.display = 'block';
-  $('traffic-light').style.display = 'flex';$('start-btn').disabled = true;
-  $('stop-btn').disabled = false;
-  $('export-btn').disabled = true;
-  
-  updateStats();
-  startClock();
-  nextTrial();
+  // Örnek: Test başarıyla tamamlandığinde tetiklenen event
+  setTimeout(() => {
+    addXP(rewardXp);
+  }, 1000);
 }
 
-function updateStats(){
-  $('stat-trials').textContent = `${S.idx}/${S.total}`;
-  $('stat-score').textContent = S.score;
-  $('stat-errors').textContent = S.errors;
+function openBadges() { document.getElementById('badge-modal').style.display = 'flex'; }
+function closeBadges() { document.getElementById('badge-modal').style.display = 'none'; }
+function resetProgress() {
+  Player.xp = 0;
+  Player.level = 1;
+  updateUI();
 }
 
-function nextTrial(){
-  if(S.idx >= S.total){ finishTest(); return; }
-  S.idx++;
-  updateStats();
-  S.waiting = false;
-  
-  // Işıkları Sıfırla
-  $('light-red').classList.remove('active');
-  $('light-green').classList.remove('active');$('light-text').textContent = "HAZIRLAN...";
-  $('light-text').style.color = "#fff";
-
-  // Rastgele Gecikme (1.5s - 3.5s arası)
-  const waitTime = 1500 + rnd(2000);
-  setTimeout(()=>{
-    if(!S.active) return;
-    presentStimulus();
-  }, waitTime);
-}
-
-function presentStimulus(){
-  const isGo = Math.random() < 0.7; // %70 Gaz, %30 Fren
-  
-  if(isGo){
-    $('light-green').classList.add('active');$('light-text').textContent = "GAZ BASS!! 🚀";
-    $('light-text').style.color = "#00e676";
-    playSound('go');
-  } else {
-    $('light-red').classList.add('active');$('light-text').textContent = "FREN YAP!! 🛑";
-    $('light-text').style.color = "#ff1744";
-    playSound('stop');
-  }
-
-  S.t0 = performance.now();
-  S.waiting = true;
-
-  // Zaman aşımı mantığı
-  const timeoutMs = 1500;
-  const trialTimer = setTimeout(()=>{
-    if(S.waiting){
-      // Oyuncu hiçbir şeye dokunmadı
-      if(isGo){
-        // Omisyon Hatası (Gaz vermesi gerekiyordu ama vermedi)
-        handleResponse(false, 'MISS', 1500, 'GO');
-      } else {
-        // Doğru İnhibisyon (Fren yapması gerekiyordu ve yapmadı)
-        handleResponse(true, 'NONE', 1500, 'NOGO');
-      }
-    }
-  }, timeoutMs);
-
-  // Arabaya Dokunma Olayı (Pointer Event)
-  $('player-car').onclick = (e) => {
-    if(!S.waiting) return;
-    clearTimeout(trialTimer);
-    const rt = Math.round(performance.now() - S.t0);
-    
-    if(isGo){
-      // Doğru Reaksiyon
-      handleResponse(true, 'TAP', rt, 'GO');
-    } else {
-      // Komisyon Hatası (Frende gaza bastı)
-      handleResponse(false, 'TAP', rt, 'NOGO');
-    }
-  };
-}
-
-function handleResponse(correct, responseType, rt, condition){
-  S.waiting = false;
-  
-  if(correct){
-    S.score += (condition === 'GO') ? Math.max(100, 1000 - rt) : 500; // Hızlı basarsa yüksek puan
-    $('player-car').classList.add('bounce');
-    setTimeout(()=>$('player-car').classList.remove('bounce'), 300);
-  } else {
-    S.errors++;
-    S.score = Math.max(0, S.score - 200);
-    $('game-area').classList.add('shake-target');
-    setTimeout(()=>$('game-area').classList.remove('shake-target'), 400);
-  }
-
-  // Veri Kaydı (Veri Tabanı / CSV formatı ile tam uyumlu)
-  S.rows.push({
-    sessionId: S.sessionId,
-    athleteId: $('athlete-id').value,
-    age: $('athlete-age').value,
-    trial: S.idx,
-    condition: condition,
-    response: responseType,
-    rt: rt,
-    correct: correct ? 1 : 0,
-    score: S.score,
-    timestamp: new Date().toISOString()
-  });
-
-  updateStats();
-  setTimeout(nextTrial, 1000);
-}
-
-function stopTest(){
-  S.active = false;
-  stopClock();
-  $('instruction-card').style.display = 'block';$('instr-title').textContent = "Yarış Durduruldu!";
-  $('instr-text').textContent = "İstediğin zaman tekrar başlayabilirsin.";
-  $('player-car').style.display = 'none';
-  $('traffic-light').style.display = 'none';$('start-btn').disabled = false;
-  $('stop-btn').disabled = true;
-}
-
-function finishTest(){
-  S.active = false;
-  stopClock();
-  playSound('win');
-  
-  let unvan = "Çaylak Sürücü 🐣";
-  if(S.score > 5000) unvan = "Efsanevi Yarışçı 🏆⚡";
-  else if(S.score > 3000) unvan = "Hız Şampiyonu 🏎️💨";
-
-  $('instruction-card').style.display = 'block';$('instr-title').textContent = "YARIŞ BİTTİ!";
-  $('instr-text').innerHTML = `
-    <b>Kazanılan Unvan:</b> <span style="color:#ffcc00;font-size:1.2rem">${unvan}</span><br><br>
-    <b>Toplam Skor:</b> ${S.score} Puan<br>
-    <b>Toplam Hata:</b> ${S.errors}<br><br>
-    Tebrikler! Bilişsel reflekslerin harikaydı!
-  `;
-  
-  $('player-car').style.display = 'none';
-  $('traffic-light').style.display = 'none';$('start-btn').disabled = false;
-  $('stop-btn').disabled = true;
-  $('export-btn').disabled = false;
-}
-
-function exportCSV(){
-  if(!S.rows.length) return;
-  const keys = Object.keys(S.rows[0]);
-  const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
-    + keys.join(",") + "\n"
-    + S.rows.map(e => keys.map(k => e[k]).join(",")).join("\n");
-    
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `SPPLab_Kids_${$('athlete-id').value}_${Date.now()}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+updateUI();
 </script>
 </body>
 </html>
